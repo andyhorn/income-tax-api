@@ -39,6 +39,14 @@ export class StateTaxController {
     return stateTaxes.map(this.converter.toDto);
   }
 
+  @Get('source')
+  public getSource(): { source: string } {
+    return {
+      source:
+        'https://taxfoundation.org/data/all/state/state-income-tax-rates-2024/',
+    };
+  }
+
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))

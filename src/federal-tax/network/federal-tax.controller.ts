@@ -41,6 +41,13 @@ export class FederalTaxController {
     return brackets.map(this.converter.toDto);
   }
 
+  @Get('source')
+  public getSource(): { source: string } {
+    return {
+      source: 'https://taxfoundation.org/data/all/federal/2024-tax-brackets/',
+    };
+  }
+
   @Post(':year')
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
