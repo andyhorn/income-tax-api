@@ -3,7 +3,7 @@ import { In, MoreThan, Repository } from 'typeorm';
 import {
   FederalTaxBracket,
   FederalTaxFilingStatus,
-} from '../business/federal-tax.interface';
+} from './federal-tax.interface';
 import { FederalTaxEntityConverter } from './federal-tax-entity.converter';
 import {
   FederalTaxFilingStatusEntity,

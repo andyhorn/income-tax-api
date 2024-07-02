@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FederalTaxBracket } from '../business/federal-tax.interface';
+import { FederalTaxBracket } from '../data/federal-tax.interface';
 import { DtoFilingStatus, FederalTaxBracketDto } from './federal-tax.dto';
 
 @Injectable()

@@ -3,7 +3,7 @@ import { FederalTaxRepository } from '../data/federal-tax.repository';
 import {
   FederalTaxBracket,
   FederalTaxFilingStatus,
-} from './federal-tax.interface';
+} from '../data/federal-tax.interface';
 import { FederalTaxCsvParsingService } from './federal-tax-csv-parsing.service';
 
 export interface TaxBracketQuery {

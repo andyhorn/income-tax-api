@@ -6,7 +6,7 @@ import {
 import {
   FederalTaxBracket,
   FederalTaxFilingStatus,
-} from '../business/federal-tax.interface';
+} from './federal-tax.interface';
 
 @Injectable()
 export class FederalTaxEntityConverter {

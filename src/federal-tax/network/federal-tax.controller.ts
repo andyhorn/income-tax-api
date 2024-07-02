@@ -11,7 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
-import { FederalTaxFilingStatus } from '../business/federal-tax.interface';
+import { FederalTaxFilingStatus } from '../data/federal-tax.interface';
 import { FederalTaxService } from '../business/federal-tax.service';
 import { FederalTaxDtoConverter } from './federal-tax-dto.converter';
 import { DtoFilingStatus, FederalTaxBracketDto } from './federal-tax.dto';

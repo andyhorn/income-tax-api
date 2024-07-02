@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   FederalTaxBracket,
   FederalTaxFilingStatus,
-} from './federal-tax.interface';
+} from '../data/federal-tax.interface';
 
 interface ParsedRow {
   rate: string;
