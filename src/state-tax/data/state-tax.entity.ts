@@ -20,12 +20,18 @@ export class StateTaxEntity {
   })
   public filingStatus: StateTaxFilingStatusEntity;
 
-  @Column()
+  @Column({
+    type: 'int',
+  })
   public income: number;
 
-  @Column()
+  @Column({
+    type: 'real',
+  })
   public rate: number;
 
-  @Column()
+  @Column({
+    type: 'int',
+  })
   public year: number;
 }

@@ -11,7 +11,9 @@ export class FederalTaxBracketEntity {
   @PrimaryGeneratedColumn()
   public id?: number;
 
-  @Column()
+  @Column({
+    type: 'int',
+  })
   public year: number;
 
   @Column({
@@ -21,11 +23,14 @@ export class FederalTaxBracketEntity {
   })
   public status: FederalTaxFilingStatusEntity;
 
-  @Column()
+  @Column({
+    type: 'int',
+  })
   public minimum: number;
 
   @Column({
     nullable: true,
+    type: 'int',
   })
   public maximum: number | null;
 
