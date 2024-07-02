@@ -3,12 +3,28 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthGuard } from './auth.guard';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [
+    ConfigModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          secret:
+            config.get<string>('SUPABASE_JWT_SECRET') ??
+            'super-secret-jwt-token-with-at-least-32-characters-long',
+        };
+      },
+    }),
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,
+    AuthGuard,
     {
       provide: SupabaseClient,
       inject: [ConfigService],
@@ -21,5 +37,6 @@ import { AuthController } from './auth.controller';
       },
     },
   ],
+  exports: [AuthGuard, JwtModule],
 })
 export class AuthModule {}
