@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
@@ -16,6 +17,7 @@ import { FederalTaxDtoConverter } from './federal-tax-dto.converter';
 import { DtoFilingStatus, FederalTaxBracketDto } from './federal-tax.dto';
 import { MaybeParseFilingStatusPipe } from 'src/pipes/maybe-parse-filing-status.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('federal')
 export class FederalTaxController {
@@ -40,6 +42,7 @@ export class FederalTaxController {
   }
 
   @Post(':year')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   public async upload(
     @UploadedFile() file: Express.Multer.File,
