@@ -1,4 +1,4 @@
-import { StateTax } from '../data/state-tax.interface';
+import { StateTax, StateTaxFilingStatus } from '../data/state-tax.interface';
 import { StateTaxDto, StateTaxFilingStatusDto } from './state-tax.dto';
 
 export class StateTaxDtoConverter {
@@ -11,5 +11,11 @@ export class StateTaxDtoConverter {
       year: stateTax.year,
       id: stateTax.id,
     };
+  }
+
+  public maybeConvertFilingStatus(
+    filingStatus?: StateTaxFilingStatusDto,
+  ): StateTaxFilingStatus | null {
+    return filingStatus && StateTaxFilingStatus[filingStatus];
   }
 }
