@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { FederalTaxBracket } from '../data/federal-tax.interface';
-import { DtoFilingStatus, FederalTaxBracketDto } from './federal-tax.dto';
+import {
+  FederalTaxBracket,
+  FederalTaxFilingStatus,
+} from '../data/federal-tax.interface';
+import {
+  FederalTaxFilingStatusDto,
+  FederalTaxBracketDto,
+  FederalTaxBracketQueryDto,
+} from './federal-tax.dto';
+import { TaxBracketQuery } from '../business/federal-tax.service';
 
 @Injectable()
 export class FederalTaxDtoConverter {
@@ -8,9 +16,17 @@ export class FederalTaxDtoConverter {
     return {
       minimum: bracket.minimum,
       rate: bracket.tax,
-      status: DtoFilingStatus[bracket.status],
+      status: FederalTaxFilingStatusDto[bracket.status],
       year: bracket.year,
       maximum: bracket.maximum,
+    };
+  }
+
+  public toQuery(dto: FederalTaxBracketQueryDto): TaxBracketQuery {
+    return {
+      income: dto.income,
+      status: dto.status && FederalTaxFilingStatus[dto.status],
+      year: dto.year,
     };
   }
 }

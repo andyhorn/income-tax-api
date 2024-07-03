@@ -10,14 +10,16 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
-import { FederalTaxFilingStatus } from '../data/federal-tax.interface';
-import { FederalTaxService } from '../business/federal-tax.service';
-import { FederalTaxDtoConverter } from './federal-tax-dto.converter';
-import { DtoFilingStatus, FederalTaxBracketDto } from './federal-tax.dto';
-import { MaybeParseFilingStatusPipe } from 'src/pipes/maybe-parse-filing-status.pipe';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { MaybeParseFilingStatusPipe } from 'src/pipes/maybe-parse-filing-status.pipe';
+import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
+import { FederalTaxService } from '../business/federal-tax.service';
+import { FederalTaxDtoConverter } from './federal-tax-dto.converter';
+import {
+  FederalTaxBracketDto,
+  FederalTaxFilingStatusDto,
+} from './federal-tax.dto';
 
 @Controller('federal')
 export class FederalTaxController {
@@ -29,14 +31,17 @@ export class FederalTaxController {
   @Get()
   public async find(
     @Query('year', MaybeParseIntPipe) year?: number,
-    @Query('status', MaybeParseFilingStatusPipe) status?: DtoFilingStatus,
+    @Query('status', MaybeParseFilingStatusPipe)
+    status?: FederalTaxFilingStatusDto,
     @Query('income', MaybeParseIntPipe) income?: number,
   ): Promise<FederalTaxBracketDto[]> {
-    const brackets = await this.federalTaxService.find({
-      year,
-      income,
-      status: status && FederalTaxFilingStatus[status],
-    });
+    const brackets = await this.federalTaxService.find(
+      this.converter.toQuery({
+        income,
+        status,
+        year,
+      }),
+    );
 
     return brackets.map(this.converter.toDto);
   }
