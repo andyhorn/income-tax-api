@@ -9,7 +9,6 @@ export class StateTaxDtoConverter {
       rate: stateTax.rate,
       state: stateTax.state,
       year: stateTax.year,
-      id: stateTax.id,
     };
   }
 

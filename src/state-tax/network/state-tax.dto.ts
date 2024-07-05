@@ -4,7 +4,6 @@ export enum StateTaxFilingStatusDto {
 }
 
 export interface StateTaxDto {
-  id?: number;
   state: string;
   filingStatus: StateTaxFilingStatusDto;
   income: number;
