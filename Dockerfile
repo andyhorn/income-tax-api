@@ -2,7 +2,7 @@
 
 # Adjust NODE_VERSION as desired
 ARG NODE_VERSION=18.20.3
-FROM node:${NODE_VERSION}-slim as base
+FROM node:${NODE_VERSION}-slim AS base
 
 LABEL fly_launch_runtime="NestJS"
 
@@ -12,9 +12,8 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV="production"
 
-
 # Throw-away build stage to reduce size of final image
-FROM base as build
+FROM base AS build
 
 # Install packages needed to build node modules
 RUN apt-get update -qq && \
@@ -30,13 +29,12 @@ COPY --link . .
 # Build application
 RUN npm run build
 
-
 # Final stage for app image
 FROM base
 
 # Copy built application
-COPY --from=build /app /app
+COPY --from=build /app/dist ./dist
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "dist/main.js" ]
