@@ -15,7 +15,7 @@ export class FederalTaxEntityConverter {
       maximum: entity.maximum,
       minimum: entity.minimum,
       tax: entity.rate,
-      status: FederalTaxFilingStatus[entity.rate],
+      status: FederalTaxFilingStatus[entity.status],
       year: entity.year,
     };
   }
