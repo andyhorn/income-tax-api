@@ -1,14 +1,14 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, MoreThan, Repository } from 'typeorm';
+import { In, MoreThanOrEqual, Repository } from 'typeorm';
+import { FederalTaxEntityConverter } from './federal-tax-entity.converter';
+import {
+  FederalTaxBracketEntity,
+  FederalTaxFilingStatusEntity,
+} from './federal-tax.entity';
 import {
   FederalTaxBracket,
   FederalTaxFilingStatus,
 } from './federal-tax.interface';
-import { FederalTaxEntityConverter } from './federal-tax-entity.converter';
-import {
-  FederalTaxFilingStatusEntity,
-  FederalTaxBracketEntity,
-} from './federal-tax.entity';
 
 export interface FederalTaxBracketQuery {
   year?: number;
@@ -28,7 +28,7 @@ export class FederalTaxRepository {
   ): Promise<FederalTaxBracket[]> {
     const entities = await this.repository.findBy({
       year: query.year,
-      maximum: query.income && MoreThan(query.income),
+      income: query.income && MoreThanOrEqual(query.income),
       status: query.status && FederalTaxFilingStatusEntity[query.status],
     });
 

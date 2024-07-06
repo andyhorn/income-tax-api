@@ -14,11 +14,10 @@ import { TaxBracketQuery } from '../business/federal-tax.service';
 export class FederalTaxDtoConverter {
   public toDto(bracket: FederalTaxBracket): FederalTaxBracketDto {
     return {
-      minimum: bracket.minimum,
+      income: bracket.income,
       rate: bracket.tax,
       status: FederalTaxFilingStatusDto[bracket.status],
       year: bracket.year,
-      maximum: bracket.maximum,
     };
   }
 

@@ -6,8 +6,7 @@ export enum FederalTaxFilingStatusDto {
 
 export interface FederalTaxBracketDto {
   rate: number;
-  minimum: number;
-  maximum?: number;
+  income: number;
   status: FederalTaxFilingStatusDto;
   year: number;
 }

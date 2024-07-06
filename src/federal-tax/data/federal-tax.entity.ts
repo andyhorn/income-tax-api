@@ -26,13 +26,7 @@ export class FederalTaxBracketEntity {
   @Column({
     type: 'int',
   })
-  public minimum: number;
-
-  @Column({
-    nullable: true,
-    type: 'int',
-  })
-  public maximum: number | null;
+  public income: number;
 
   @Column({
     type: 'real',

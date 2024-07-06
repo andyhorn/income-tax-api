@@ -22,34 +22,32 @@ export class FederalTaxCsvParsingService {
     const taxes: FederalTaxBracket[] = [];
 
     for (const row of rows) {
-      const { rate, singleRange, jointRange, headRange } = this.parseRow(row);
+      const { rate, singleRange, jointRange, headRange } =
+        this.parseRowElements(row);
 
       const parsedRate = this.parseRate(rate);
-      const parsedSingleRange = this.parseIncomeRange(singleRange);
-      const parsedJointRange = this.parseIncomeRange(jointRange);
-      const parsedHeadRange = this.parseIncomeRange(headRange);
+      const parsedSingleIncome = this.parseIncome(singleRange);
+      const parsedJointIncome = this.parseIncome(jointRange);
+      const parsedHeadIncome = this.parseIncome(headRange);
 
       const singleBracket: FederalTaxBracket = {
         year,
         status: FederalTaxFilingStatus.SINGLE,
-        minimum: parsedSingleRange.min,
-        maximum: parsedSingleRange.max,
+        income: parsedSingleIncome,
         tax: parsedRate,
       };
 
       const jointBracket: FederalTaxBracket = {
         year,
         status: FederalTaxFilingStatus.JOINT,
-        minimum: parsedJointRange.min,
-        maximum: parsedJointRange.max,
+        income: parsedJointIncome,
         tax: parsedRate,
       };
 
       const headBracket: FederalTaxBracket = {
         year,
         status: FederalTaxFilingStatus.HEAD,
-        minimum: parsedHeadRange.min,
-        maximum: parsedHeadRange.max,
+        income: parsedHeadIncome,
         tax: parsedRate,
       };
 
@@ -61,7 +59,7 @@ export class FederalTaxCsvParsingService {
     return taxes;
   }
 
-  private parseRow(row: string): ParsedRow {
+  private parseRowElements(row: string): ParsedRow {
     const [rate, singleRange, jointRange, headRange] = row
       .split(',"')
       .map((el) => el.replaceAll('"', ''));
@@ -74,14 +72,11 @@ export class FederalTaxCsvParsingService {
     };
   }
 
-  private parseIncomeRange(range: string): { min: number; max: number | null } {
-    const minMatch = range.match(this.dollarBeginRegExp);
-    const maxMatch = range.match(this.dollarEndRegExp);
-
-    const min = minMatch ? parseInt(minMatch[1].replaceAll(',', '')) : 0;
-    const max = maxMatch ? parseInt(maxMatch[1].replaceAll(',', '')) : null;
-
-    return { min, max };
+  private parseIncome(range: string): number {
+    const incomeRangeStart = range.match(this.dollarBeginRegExp);
+    return incomeRangeStart
+      ? parseInt(incomeRangeStart[1].replaceAll(',', ''))
+      : 0;
   }
 
   private parseRate(rate: string): number {

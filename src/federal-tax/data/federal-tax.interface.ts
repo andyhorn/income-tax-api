@@ -1,7 +1,6 @@
 export interface FederalTaxBracket {
   id?: number;
-  minimum: number;
-  maximum: number | null;
+  income: number;
   tax: number;
   status: FederalTaxFilingStatus;
   year: number;

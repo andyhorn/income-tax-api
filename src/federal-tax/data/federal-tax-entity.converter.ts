@@ -12,8 +12,7 @@ import {
 export class FederalTaxEntityConverter {
   public fromEntity(entity: FederalTaxBracketEntity): FederalTaxBracket {
     return {
-      maximum: entity.maximum,
-      minimum: entity.minimum,
+      income: entity.income,
       tax: entity.rate,
       status: FederalTaxFilingStatus[entity.status],
       year: entity.year,
@@ -22,8 +21,7 @@ export class FederalTaxEntityConverter {
 
   public toEntity(bracket: FederalTaxBracket): FederalTaxBracketEntity {
     return {
-      maximum: bracket.maximum,
-      minimum: bracket.minimum,
+      income: bracket.income,
       rate: bracket.tax,
       status: FederalTaxFilingStatusEntity[bracket.status],
       year: bracket.year,
