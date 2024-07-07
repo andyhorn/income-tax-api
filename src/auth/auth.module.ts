@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SupabaseClient } from '@supabase/supabase-js';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { UsersBusinessModule } from 'src/users/business/users-business.module';
+import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
 
 @Module({
   imports: [
+    UsersBusinessModule,
     ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -37,6 +39,6 @@ import { AuthGuard } from './auth.guard';
       },
     },
   ],
-  exports: [AuthGuard, JwtModule],
+  exports: [AuthGuard, JwtModule, UsersBusinessModule],
 })
 export class AuthModule {}
