@@ -1,0 +1,1 @@
+alter table api_keys add column user_id int not null references users(id);
