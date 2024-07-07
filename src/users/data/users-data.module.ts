@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UserEntityConverter } from './user-entity.converter';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntityConverter } from './user-entity.converter';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 

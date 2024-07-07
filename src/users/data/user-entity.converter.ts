@@ -8,6 +8,8 @@ export class UserEntityConverter {
     return {
       uuid: entity.uuid,
       email: entity.email,
+      createdAt: entity.createdAt,
+      deletedAt: entity.deletedAt,
     };
   }
 }
