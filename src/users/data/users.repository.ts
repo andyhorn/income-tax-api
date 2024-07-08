@@ -11,6 +11,16 @@ export class UsersRepository {
     private readonly converter: UserEntityConverter,
   ) {}
 
+  public async find(id: number): Promise<User | null> {
+    const entity = await this.repository.findOneBy({ id });
+
+    if (!entity) {
+      return null;
+    }
+
+    return this.converter.fromEntity(entity);
+  }
+
   public async findByUuid(uuid: string): Promise<User | null> {
     const entity = await this.repository.findOneBy({
       uuid,

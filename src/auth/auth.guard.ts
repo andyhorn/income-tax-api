@@ -1,10 +1,22 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { UsersService } from 'src/users/business/users.service';
+import { User } from 'src/users/data/user.interface';
+
+export const USER_ID_REQUEST_KEY = 'userId';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+  ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest() as Request;
@@ -15,7 +27,8 @@ export class AuthGuard implements CanActivate {
     }
 
     const uuid = await this.extractUuid(token);
-    this.setUuid(req, uuid);
+    const user = await this.findUser(uuid);
+    this.setUserId(req, user);
 
     return true;
   }
@@ -40,7 +53,17 @@ export class AuthGuard implements CanActivate {
     }
   }
 
-  private setUuid(req: Request, uuid: string): void {
-    (req as any)['user'] = uuid;
+  private async findUser(uuid: string): Promise<User> {
+    const user = await this.usersService.findByUuid(uuid);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return user;
+  }
+
+  private setUserId(req: Request, user: User): void {
+    (req as any)[USER_ID_REQUEST_KEY] = user.id;
   }
 }

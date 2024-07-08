@@ -3,18 +3,19 @@ import {
   UnauthorizedException,
   createParamDecorator,
 } from '@nestjs/common';
+import { USER_ID_REQUEST_KEY } from 'src/auth/auth.guard';
 
-export const AuthenticatedUserUuid = createParamDecorator<
+export const AuthenticatedUserId = createParamDecorator<
   any,
   ExecutionContext,
-  string
+  number
 >((_, context) => {
   const req: Request = context.switchToHttp().getRequest();
-  const uuid = req['user'];
+  const userId = req[USER_ID_REQUEST_KEY];
 
-  if (!uuid) {
+  if (!userId) {
     throw new UnauthorizedException();
   }
 
-  return uuid;
+  return userId;
 });
