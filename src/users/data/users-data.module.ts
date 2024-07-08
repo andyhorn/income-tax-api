@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntityConverter } from './user-entity.converter';
 import { UserEntity } from './user.entity';
-import { UserRepository } from './user.repository';
+import { UsersRepository } from './users.repository';
 
 @Module({
-  providers: [UserEntityConverter, UserRepository],
+  providers: [UserEntityConverter, UsersRepository],
   imports: [TypeOrmModule.forFeature([UserEntity])],
-  exports: [UserRepository],
+  exports: [UsersRepository],
 })
 export class UsersDataModule {}
