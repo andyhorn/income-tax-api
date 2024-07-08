@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { FederalTaxModule } from './federal-tax/federal-tax.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { MaybeParseIntPipe } from './pipes/maybe-parse-int.pipe';
-import { MaybeParseFilingStatusPipe } from './pipes/maybe-parse-filing-status.pipe';
-import { StateTaxModule } from './state-tax/state-tax.module';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ApiKeyNetworkModule } from './api-keys/network/api-key-network.module';
+import { AuthModule } from './auth/auth.module';
+import { FederalTaxModule } from './federal-tax/federal-tax.module';
+import { MaybeParseFilingStatusPipe } from './pipes/maybe-parse-filing-status.pipe';
+import { MaybeParseIntPipe } from './pipes/maybe-parse-int.pipe';
+import { StateTaxModule } from './state-tax/state-tax.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     AuthModule,
     FederalTaxModule,
     StateTaxModule,
+    ApiKeyNetworkModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
