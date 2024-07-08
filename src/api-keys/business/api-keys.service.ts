@@ -29,6 +29,10 @@ export class ApiKeysService {
     return await this.apiKeysRepository.save({ userId, key, iv });
   }
 
+  public async find(key: string): Promise<ApiKey | null> {
+    return await this.apiKeysRepository.find(key);
+  }
+
   private getSecretKey(): string {
     return this.configService.getOrThrow<string>('SUPABASE_JWT_SECRET');
   }
