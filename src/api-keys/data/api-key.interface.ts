@@ -8,5 +8,6 @@ export interface ApiKey {
 
 export interface ApiKeyCreateParams {
   userId: number;
-  token: string;
+  key: string;
+  iv: string;
 }
