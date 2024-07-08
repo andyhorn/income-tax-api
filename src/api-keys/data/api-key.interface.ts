@@ -4,3 +4,8 @@ export interface ApiKey {
   createdAt: Date;
   deletedAt: Date | null;
 }
+
+export interface ApiKeyCreateParams {
+  userId: number;
+  token: string;
+}
