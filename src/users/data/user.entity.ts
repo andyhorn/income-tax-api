@@ -10,9 +10,6 @@ export class UserEntity {
   })
   uuid: string;
 
-  @Column()
-  email: string;
-
   @Column({
     name: 'created_at',
     type: 'timestamp',
