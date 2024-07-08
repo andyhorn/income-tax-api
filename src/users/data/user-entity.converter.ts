@@ -6,6 +6,7 @@ import { User } from './user.interface';
 export class UserEntityConverter {
   public fromEntity(entity: UserEntity): User {
     return {
+      id: entity.id,
       uuid: entity.uuid,
       email: entity.email,
       createdAt: entity.createdAt,
