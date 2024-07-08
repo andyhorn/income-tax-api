@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { IncomingHttpHeaders } from 'http';
 import { ApiKeysService } from 'src/api-keys/business/api-keys.service';
 
 @Injectable()
@@ -13,7 +14,7 @@ export class ApiKeyGuard implements CanActivate {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
-    const key = <string>req.headers['x-api-key'];
+    const key = this.extractApiKey(req.headers);
 
     if (!key) {
       throw new UnauthorizedException('Missing API Key');
@@ -27,5 +28,19 @@ export class ApiKeyGuard implements CanActivate {
     }
 
     return true;
+  }
+
+  private extractApiKey(headers: IncomingHttpHeaders): string | null {
+    const key = headers['x-api-key'];
+
+    if (Array.isArray(key)) {
+      if (key.length) {
+        return key[0];
+      }
+
+      return null;
+    }
+
+    return key ?? null;
   }
 }
