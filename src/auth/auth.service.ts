@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { SupabaseClient } from '@supabase/supabase-js';
+import { AuthError, SupabaseClient } from '@supabase/supabase-js';
 import { UsersService } from 'src/users/business/users.service';
 import { SignInParams, UserTokens } from './auth.interface';
-import { EmailInUseError } from './auth.error';
+import { EmailInUseError, InvalidCredentialsError } from './auth.error';
 
 @Injectable()
 export class AuthService {
@@ -12,10 +12,12 @@ export class AuthService {
   ) {}
 
   public async login({ email, password }: SignInParams): Promise<UserTokens> {
-    const { data } = await this.authClient.auth.signInWithPassword({
+    const { data, error } = await this.authClient.auth.signInWithPassword({
       email,
       password,
     });
+
+    this.handleError(error);
 
     return {
       access: data.session.access_token,
@@ -29,14 +31,7 @@ export class AuthService {
       password,
     });
 
-    if (error) {
-      switch (error.message) {
-        case 'User already registered':
-          throw new EmailInUseError();
-        default:
-          throw error;
-      }
-    }
+    this.handleError(error);
 
     await this.usersService.create(data.user.id);
 
@@ -44,5 +39,20 @@ export class AuthService {
       access: data.session.access_token,
       refresh: data.session.refresh_token,
     };
+  }
+
+  private handleError(error?: AuthError): void {
+    if (!error) {
+      return;
+    }
+
+    switch (error.message) {
+      case 'User already registered':
+        throw new EmailInUseError();
+      case 'Invalid login credentials':
+        throw new InvalidCredentialsError();
+      default:
+        throw error;
+    }
   }
 }
