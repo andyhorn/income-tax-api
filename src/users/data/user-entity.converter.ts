@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from './user.entity';
-import { User } from './user.interface';
+import { User, UserRole } from './user.interface';
 
 @Injectable()
 export class UserEntityConverter {
@@ -8,6 +8,7 @@ export class UserEntityConverter {
     return {
       id: entity.id,
       uuid: entity.uuid,
+      role: UserRole[entity.role],
       createdAt: entity.createdAt,
       deletedAt: entity.deletedAt,
     };
