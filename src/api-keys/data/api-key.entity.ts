@@ -38,3 +38,23 @@ export class ApiKeyEntity {
   })
   deletedAt: Date;
 }
+
+export class ApiKeyUsageEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => ApiKeyEntity)
+  @JoinColumn({
+    name: 'api_key_id',
+  })
+  apiKey: ApiKeyEntity;
+
+  @Column('api_key_id')
+  apiKeyId: number;
+
+  @Column({
+    type: 'timestamptz',
+    name: 'used_at',
+  })
+  usedAt: Date;
+}
