@@ -21,7 +21,7 @@ export class ApiKeyGuard implements CanActivate {
     }
 
     const hashed = this.apiKeysService.hash(key);
-    const apiKey = await this.apiKeysService.find(hashed);
+    const apiKey = await this.apiKeysService.markUsed(hashed);
 
     if (!apiKey || apiKey.deletedAt) {
       throw new UnauthorizedException('Invalid API Key');

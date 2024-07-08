@@ -32,6 +32,10 @@ export class ApiKeysService {
     return await this.apiKeysRepository.find(key);
   }
 
+  public async markUsed(hash: string): Promise<ApiKey | null> {
+    return await this.apiKeysRepository.markUsed(hash);
+  }
+
   public hash(token: string): string {
     return createHash('sha256').update(token).digest('base64');
   }

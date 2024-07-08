@@ -39,6 +39,7 @@ export class ApiKeyEntity {
   deletedAt: Date;
 }
 
+@Entity('api_key_usage')
 export class ApiKeyUsageEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -49,7 +50,9 @@ export class ApiKeyUsageEntity {
   })
   apiKey: ApiKeyEntity;
 
-  @Column('api_key_id')
+  @Column({
+    name: 'api_key_id',
+  })
   apiKeyId: number;
 
   @Column({
