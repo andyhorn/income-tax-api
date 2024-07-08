@@ -32,4 +32,16 @@ export class UsersRepository {
 
     return this.converter.fromEntity(entity);
   }
+
+  public async create(uuid: string): Promise<User> {
+    const result = await this.repository.insert({
+      uuid,
+    });
+
+    const entity = await this.repository.findOneBy({
+      id: result.identifiers[0].id,
+    });
+
+    return this.converter.fromEntity(entity);
+  }
 }
