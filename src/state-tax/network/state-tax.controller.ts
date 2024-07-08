@@ -11,6 +11,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
+import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
 import { StateTaxService } from '../business/state-tax.service';
 import { StateTaxDtoConverter } from './state-tax-dto.converter';
 import { StateTaxDto, StateTaxFilingStatusDto } from './state-tax.dto';
@@ -23,6 +24,7 @@ export class StateTaxController {
   ) {}
 
   @Get()
+  @UseGuards(ApiKeyGuard)
   public async get(
     @Query('year', MaybeParseIntPipe) year?: number,
     @Query('status') filingStatus?: StateTaxFilingStatusDto,

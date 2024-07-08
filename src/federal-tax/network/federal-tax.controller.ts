@@ -20,6 +20,7 @@ import {
   FederalTaxBracketDto,
   FederalTaxFilingStatusDto,
 } from './federal-tax.dto';
+import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
 
 @Controller('federal')
 export class FederalTaxController {
@@ -29,6 +30,7 @@ export class FederalTaxController {
   ) {}
 
   @Get()
+  @UseGuards(ApiKeyGuard)
   public async find(
     @Query('year', MaybeParseIntPipe) year?: number,
     @Query('status', MaybeParseFilingStatusPipe)
