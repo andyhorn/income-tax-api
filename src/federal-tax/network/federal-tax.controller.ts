@@ -12,15 +12,17 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Roles, UserRoleGuard } from 'src/auth/user-role.guard';
 import { MaybeParseFilingStatusPipe } from 'src/pipes/maybe-parse-filing-status.pipe';
 import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
+import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
+import { UserRole } from 'src/users/data/user.interface';
 import { FederalTaxService } from '../business/federal-tax.service';
 import { FederalTaxDtoConverter } from './federal-tax-dto.converter';
 import {
   FederalTaxBracketDto,
   FederalTaxFilingStatusDto,
 } from './federal-tax.dto';
-import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
 
 @Controller('federal')
 export class FederalTaxController {
@@ -56,7 +58,8 @@ export class FederalTaxController {
   }
 
   @Post(':year')
-  @UseGuards(AuthGuard)
+  @Roles([UserRole.ADMIN])
+  @UseGuards(AuthGuard, UserRoleGuard)
   @UseInterceptors(FileInterceptor('file'))
   public async upload(
     @UploadedFile() file: Express.Multer.File,
