@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { UsersService } from 'src/users/business/users.service';
 import { SignInParams, UserTokens } from './auth.interface';
+import { EmailInUseError } from './auth.error';
 
 @Injectable()
 export class AuthService {
@@ -23,10 +24,19 @@ export class AuthService {
   }
 
   public async create({ email, password }: SignInParams): Promise<UserTokens> {
-    const { data } = await this.authClient.auth.signUp({
+    const { data, error } = await this.authClient.auth.signUp({
       email,
       password,
     });
+
+    if (error) {
+      switch (error.message) {
+        case 'User already registered':
+          throw new EmailInUseError();
+        default:
+          throw error;
+      }
+    }
 
     await this.usersService.create(data.user.id);
 
