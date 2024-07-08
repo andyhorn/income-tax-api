@@ -4,7 +4,7 @@ import { UsersService } from 'src/users/business/users.service';
 import { User, UserRole } from 'src/users/data/user.interface';
 import { USER_ID_REQUEST_KEY } from './auth.guard';
 
-export const Roles = Reflector.createDecorator<string[]>();
+export const Role = Reflector.createDecorator<string>();
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
@@ -14,9 +14,9 @@ export class UserRoleGuard implements CanActivate {
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const roles = this.reflector.get(Roles, context.getHandler());
+    const role = this.reflector.get(Role, context.getHandler());
 
-    if (!roles) {
+    if (!role) {
       return true;
     }
 
@@ -29,14 +29,14 @@ export class UserRoleGuard implements CanActivate {
 
     const user = await this.usersService.find(+userId);
 
-    return this.validateRoles(roles, user);
+    return this.validateRole(role, user);
   }
 
-  private validateRoles(roles: string[], user: User): boolean {
-    if (roles.includes(UserRole.ADMIN)) {
-      return user.role == UserRole.ADMIN;
+  private validateRole(role: string, user: User): boolean {
+    if (role == UserRole.USER) {
+      return true;
     }
 
-    return true;
+    return user.role == UserRole.ADMIN;
   }
 }

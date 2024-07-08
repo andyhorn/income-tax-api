@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { StateTaxBusinessModule } from '../business/state-tax-business.module';
 import { StateTaxDtoConverter } from './state-tax-dto.converter';
-import { StateTaxController } from './state-tax.controller';
 import { AuthModule } from 'src/auth/auth.module';
+import { StateTaxController } from './state-tax.controller';
 
 @Module({
   controllers: [StateTaxController],

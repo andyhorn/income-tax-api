@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { Roles, UserRoleGuard } from 'src/auth/user-role.guard';
+import { Role, UserRoleGuard } from 'src/auth/user-role.guard';
 import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
 import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
 import { UserRole } from 'src/users/data/user.interface';
@@ -52,7 +52,7 @@ export class StateTaxController {
   }
 
   @Post()
-  @Roles([UserRole.ADMIN])
+  @Role(UserRole.ADMIN)
   @UseGuards(AuthGuard, UserRoleGuard)
   @UseInterceptors(FileInterceptor('file'))
   public async upload(
