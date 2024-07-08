@@ -26,9 +26,6 @@ export class ApiKeyEntity {
   @Column()
   token: string;
 
-  @Column()
-  iv: string;
-
   @Column({
     name: 'created_at',
     type: 'timestamp',

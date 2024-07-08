@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { UsersDataModule } from 'src/users/data/users-data.module';
 import { ApiKeyDataModule } from '../data/api-key-data.module';
-import { ApiKeyEncryptionService } from './api-key-encryption.service';
 import { ApiKeysService } from './api-keys.service';
 import { ConfigModule } from '@nestjs/config';
+import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
 
 @Module({
   imports: [ApiKeyDataModule, UsersDataModule, ConfigModule],
-  providers: [ApiKeysService, ApiKeyEncryptionService],
+  providers: [ApiKeysService, ApiKeyGuard],
   exports: [ApiKeysService],
 })
 export class ApiKeysBusinessModule {}

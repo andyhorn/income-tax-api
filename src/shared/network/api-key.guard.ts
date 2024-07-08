@@ -1,58 +1,31 @@
 import {
   CanActivate,
   ExecutionContext,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ApiKeyEncryptionService } from 'src/api-keys/business/api-key-encryption.service';
+import { Request } from 'express';
 import { ApiKeysService } from 'src/api-keys/business/api-keys.service';
-import { ApiKey } from 'src/api-keys/data/api-key.interface';
 
+@Injectable()
 export class ApiKeyGuard implements CanActivate {
-  constructor(
-    private readonly apiKeyEncryptionService: ApiKeyEncryptionService,
-    private readonly apiKeysService: ApiKeysService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly apiKeysService: ApiKeysService) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
-    const { key, id } = this.getHeaders(req);
+    const key = <string>req.headers['x-api-key'];
 
-    if (!key || !id) {
-      throw new UnauthorizedException();
+    if (!key) {
+      throw new UnauthorizedException('Missing API Key');
     }
 
-    const apiKey = await this.apiKeysService.find(key);
+    const hashed = this.apiKeysService.hash(key);
+    const apiKey = await this.apiKeysService.find(hashed);
 
-    if (!apiKey) {
-      throw new UnauthorizedException();
-    }
-
-    const decrypted = await this.decrypt(apiKey);
-
-    if (decrypted != id) {
-      throw new UnauthorizedException();
+    if (!apiKey || apiKey.deletedAt) {
+      throw new UnauthorizedException('Invalid API Key');
     }
 
     return true;
-  }
-
-  private getHeaders(req: Request): { key?: string; id?: string } {
-    return {
-      key: req.headers.get('x-api-key'),
-      id: req.headers.get('x-account-id'),
-    };
-  }
-
-  private async decrypt(apiKey: ApiKey): Promise<string> {
-    const secretKey = this.configService.getOrThrow<string>(
-      'SUPABASE_JWT_SECRET',
-    );
-
-    return await this.apiKeyEncryptionService.decrypt(
-      secretKey,
-      Buffer.from(apiKey.iv),
-    );
   }
 }

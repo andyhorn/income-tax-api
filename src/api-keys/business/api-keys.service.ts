@@ -1,39 +1,42 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { createHash, randomBytes } from 'crypto';
 import { UsersRepository } from 'src/users/data/users.repository';
 import { ApiKey } from '../data/api-key.interface';
 import { ApiKeyRepository } from '../data/api-key.repository';
-import { ApiKeyEncryptionService } from './api-key-encryption.service';
-import { ConfigService } from '@nestjs/config';
+
+const KEY_LENGTH = 16;
 
 @Injectable()
 export class ApiKeysService {
   constructor(
     private readonly apiKeysRepository: ApiKeyRepository,
     private readonly usersRepository: UsersRepository,
-    private readonly encryptionService: ApiKeyEncryptionService,
-    private readonly configService: ConfigService,
   ) {}
 
-  public async createForUser(userId: number): Promise<ApiKey> {
+  public async createForUser(userId: number): Promise<string> {
     const user = await this.usersRepository.find(userId);
 
     if (!user) {
       throw new NotFoundException(`User ${userId} not found`);
     }
 
-    const { key, iv } = await this.encryptionService.encrypt(
-      this.getSecretKey(),
-      user.uuid,
-    );
+    const key = this.generateKey(KEY_LENGTH);
+    const hash = this.hash(key);
 
-    return await this.apiKeysRepository.save({ userId, key, iv });
+    await this.apiKeysRepository.save({ userId, hash });
+
+    return key;
   }
 
   public async find(key: string): Promise<ApiKey | null> {
     return await this.apiKeysRepository.find(key);
   }
 
-  private getSecretKey(): string {
-    return this.configService.getOrThrow<string>('SUPABASE_JWT_SECRET');
+  public hash(token: string): string {
+    return createHash('sha256').update(token).digest('base64');
+  }
+
+  private generateKey(length: number): string {
+    return randomBytes(length).toString('base64');
   }
 }

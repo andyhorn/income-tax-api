@@ -31,11 +31,10 @@ export class ApiKeyRepository {
     return this.converter.fromEntity(entity);
   }
 
-  public async save({ userId, key, iv }: ApiKeyCreateParams): Promise<ApiKey> {
+  public async save({ userId, hash }: ApiKeyCreateParams): Promise<ApiKey> {
     const result = await this.repository.insert({
-      token: key,
+      token: hash,
       userId,
-      iv,
     });
 
     if (!result.identifiers.length) {
