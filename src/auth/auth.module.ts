@@ -6,6 +6,7 @@ import { UsersBusinessModule } from 'src/users/business/users-business.module';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { UserRoleGuard } from './user-role.guard';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthService } from './auth.service';
   providers: [
     AuthService,
     AuthGuard,
+    UserRoleGuard,
     {
       provide: SupabaseClient,
       inject: [ConfigService],
@@ -39,6 +41,6 @@ import { AuthService } from './auth.service';
       },
     },
   ],
-  exports: [AuthGuard, JwtModule, UsersBusinessModule],
+  exports: [AuthGuard, JwtModule, UsersBusinessModule, UserRoleGuard],
 })
 export class AuthModule {}
