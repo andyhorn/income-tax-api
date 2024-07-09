@@ -7,7 +7,6 @@ import { FederalTaxModule } from './federal-tax/federal-tax.module';
 import { MaybeParseFilingStatusPipe } from './pipes/maybe-parse-filing-status.pipe';
 import { MaybeParseIntPipe } from './pipes/maybe-parse-int.pipe';
 import { StateTaxModule } from './state-tax/state-tax.module';
-import { ApiKeyGuard } from './shared/network/api-key.guard';
 
 @Module({
   imports: [
@@ -34,6 +33,6 @@ import { ApiKeyGuard } from './shared/network/api-key.guard';
   ],
   controllers: [],
   providers: [MaybeParseIntPipe, MaybeParseFilingStatusPipe],
-  exports: [ConfigModule],
+  exports: [],
 })
 export class AppModule {}

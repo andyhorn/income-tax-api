@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
-import { UsersService } from 'src/users/business/users.service';
-import { User } from 'src/users/data/user.interface';
 import {
   EmailInUseError,
   EmailNotConfirmedError,
   InvalidCredentialsError,
-} from './auth.error';
-import { SignInParams, UserTokens } from './auth.interface';
+} from '../auth.error';
+import {
+  LoginParams,
+  SignUpParams,
+  SignUpResult,
+  UserTokens,
+} from './auth-data.interface';
 
 @Injectable()
-export class AuthService {
-  constructor(
-    private readonly authClient: SupabaseClient,
-    private readonly usersService: UsersService,
-  ) {}
+export class AuthClient {
+  constructor(private readonly supabaseClient: SupabaseClient) {}
 
-  public async login({ email, password }: SignInParams): Promise<UserTokens> {
-    const { data, error } = await this.authClient.auth.signInWithPassword({
+  public async login({ email, password }: LoginParams): Promise<UserTokens> {
+    const { data, error } = await this.supabaseClient.auth.signInWithPassword({
       email,
       password,
     });
@@ -30,15 +30,18 @@ export class AuthService {
     };
   }
 
-  public async signUp({ email, password }: SignInParams): Promise<User> {
-    const { data, error } = await this.authClient.auth.signUp({
+  public async signUp({
+    email,
+    password,
+  }: SignUpParams): Promise<SignUpResult> {
+    const { data, error } = await this.supabaseClient.auth.signUp({
       email,
       password,
     });
 
     this.handleError(error);
 
-    return await this.usersService.create(data.user.id);
+    return { uuid: data.user.id };
   }
 
   private handleError(error?: AuthError): void {

@@ -3,7 +3,7 @@ import {
   UnauthorizedException,
   createParamDecorator,
 } from '@nestjs/common';
-import { USER_ID_REQUEST_KEY } from 'src/auth/auth.guard';
+import { USER_ID_REQUEST_KEY } from 'src/auth/network/auth.guard';
 
 export const AuthenticatedUserId = createParamDecorator<
   any,

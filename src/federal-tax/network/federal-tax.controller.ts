@@ -11,8 +11,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { Role, UserRoleGuard } from 'src/auth/user-role.guard';
+import { AuthGuard } from 'src/auth/network/auth.guard';
+import { Role, UserRoleGuard } from 'src/auth/network/user-role.guard';
 import { MaybeParseFilingStatusPipe } from 'src/pipes/maybe-parse-filing-status.pipe';
 import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
 import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
