@@ -12,3 +12,13 @@ export interface SignUpDto {
 export interface ResendEmailVerificationDto {
   email: string;
 }
+
+export interface VerifyEmailDto {
+  email: string;
+  token: string;
+}
+
+export interface UserTokensDto {
+  access: string;
+  refresh: string;
+}

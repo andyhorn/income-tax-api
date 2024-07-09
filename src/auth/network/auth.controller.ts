@@ -2,7 +2,13 @@ import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { UserDto } from 'src/users/network/user.dto';
 import { AuthService } from '../business/auth.service';
 import { UserTokens } from '../data/auth-data.interface';
-import { ResendEmailVerificationDto, SignInDto, SignUpDto } from './auth.dto';
+import {
+  ResendEmailVerificationDto,
+  SignInDto,
+  SignUpDto,
+  UserTokensDto,
+  VerifyEmailDto,
+} from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -33,5 +39,17 @@ export class AuthController {
     @Body() { email }: ResendEmailVerificationDto,
   ): Promise<void> {
     await this.authService.resendEmailVerification(email);
+  }
+
+  @Post('verify')
+  public async verifyEmail(
+    @Body() { email, token }: VerifyEmailDto,
+  ): Promise<UserTokensDto> {
+    const tokens = await this.authService.verifyEmail(email, token);
+
+    return {
+      access: tokens.access,
+      refresh: tokens.refresh,
+    };
   }
 }

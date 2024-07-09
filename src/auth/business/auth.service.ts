@@ -28,4 +28,8 @@ export class AuthService {
   public async resendEmailVerification(email: string): Promise<void> {
     await this.authClient.resendEmailVerification(email);
   }
+
+  public async verifyEmail(email: string, token: string): Promise<UserTokens> {
+    return await this.authClient.verifyEmail(email, token);
+  }
 }

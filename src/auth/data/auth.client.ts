@@ -4,6 +4,7 @@ import {
   EmailInUseError,
   EmailNotConfirmedError,
   InvalidCredentialsError,
+  InvalidTokenError,
 } from '../auth.error';
 import {
   LoginParams,
@@ -53,6 +54,21 @@ export class AuthClient {
     this.handleError(error);
   }
 
+  public async verifyEmail(email: string, token: string): Promise<UserTokens> {
+    const { data, error } = await this.supabaseClient.auth.verifyOtp({
+      email,
+      token,
+      type: 'signup',
+    });
+
+    this.handleError(error);
+
+    return {
+      access: data.session.access_token,
+      refresh: data.session.refresh_token,
+    };
+  }
+
   private handleError(error?: AuthError): void {
     if (!error) {
       return;
@@ -65,6 +81,8 @@ export class AuthClient {
         throw new InvalidCredentialsError();
       case 'Email not confirmed':
         throw new EmailNotConfirmedError();
+      case 'Token has expired or is invalid':
+        throw new InvalidTokenError();
       default:
         throw error;
     }

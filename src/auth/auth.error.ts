@@ -17,3 +17,9 @@ export class EmailNotConfirmedError extends UnauthorizedException {
     super('email-not-confirmed', 'This email has not been confirmed.');
   }
 }
+
+export class InvalidTokenError extends UnauthorizedException {
+  constructor() {
+    super('invalid-token', 'The token is invalid or has expired.');
+  }
+}
