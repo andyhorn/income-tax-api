@@ -2,6 +2,7 @@ import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { SignInDto, SignUpDto } from './auth.dto';
 import { UserTokens } from './auth.interface';
 import { AuthService } from './auth.service';
+import { UserDto } from 'src/users/network/user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,11 +19,12 @@ export class AuthController {
   public async signUp(
     @Body()
     { email, password, confirmPassword }: SignUpDto,
-  ): Promise<UserTokens> {
+  ): Promise<UserDto> {
     if (password != confirmPassword) {
       throw new BadRequestException('Passwords must match');
     }
 
-    return await this.authService.create({ email, password });
+    const user = await this.authService.signUp({ email, password });
+    return { uuid: user.uuid };
   }
 }

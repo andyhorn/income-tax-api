@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { AuthError, SupabaseClient } from '@supabase/supabase-js';
 import { UsersService } from 'src/users/business/users.service';
+import { User } from 'src/users/data/user.interface';
+import {
+  EmailInUseError,
+  EmailNotConfirmedError,
+  InvalidCredentialsError,
+} from './auth.error';
 import { SignInParams, UserTokens } from './auth.interface';
-import { EmailInUseError, InvalidCredentialsError } from './auth.error';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +30,7 @@ export class AuthService {
     };
   }
 
-  public async create({ email, password }: SignInParams): Promise<UserTokens> {
+  public async signUp({ email, password }: SignInParams): Promise<User> {
     const { data, error } = await this.authClient.auth.signUp({
       email,
       password,
@@ -33,12 +38,7 @@ export class AuthService {
 
     this.handleError(error);
 
-    await this.usersService.create(data.user.id);
-
-    return {
-      access: data.session.access_token,
-      refresh: data.session.refresh_token,
-    };
+    return await this.usersService.create(data.user.id);
   }
 
   private handleError(error?: AuthError): void {
@@ -51,6 +51,8 @@ export class AuthService {
         throw new EmailInUseError();
       case 'Invalid login credentials':
         throw new InvalidCredentialsError();
+      case 'Email not confirmed':
+        throw new EmailNotConfirmedError();
       default:
         throw error;
     }
