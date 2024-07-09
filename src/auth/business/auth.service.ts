@@ -24,4 +24,8 @@ export class AuthService {
 
     return await this.usersService.create(uuid);
   }
+
+  public async resendEmailVerification(email: string): Promise<void> {
+    await this.authClient.resendEmailVerification(email);
+  }
 }

@@ -44,6 +44,15 @@ export class AuthClient {
     return { uuid: data.user.id };
   }
 
+  public async resendEmailVerification(email: string): Promise<void> {
+    const { error } = await this.supabaseClient.auth.resend({
+      email,
+      type: 'signup',
+    });
+
+    this.handleError(error);
+  }
+
   private handleError(error?: AuthError): void {
     if (!error) {
       return;

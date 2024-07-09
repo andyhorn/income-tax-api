@@ -8,3 +8,7 @@ export interface SignUpDto {
   password: string;
   confirmPassword: string;
 }
+
+export interface ResendEmailVerificationDto {
+  email: string;
+}

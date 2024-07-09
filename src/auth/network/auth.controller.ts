@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
-import { SignInDto, SignUpDto } from './auth.dto';
-import { UserTokens } from '../data/auth-data.interface';
-import { AuthService } from '../business/auth.service';
 import { UserDto } from 'src/users/network/user.dto';
+import { AuthService } from '../business/auth.service';
+import { UserTokens } from '../data/auth-data.interface';
+import { ResendEmailVerificationDto, SignInDto, SignUpDto } from './auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -26,5 +26,12 @@ export class AuthController {
 
     const user = await this.authService.signUp({ email, password });
     return { uuid: user.uuid };
+  }
+
+  @Post('resend')
+  public async resendEmailVerification(
+    @Body() { email }: ResendEmailVerificationDto,
+  ): Promise<void> {
+    await this.authService.resendEmailVerification(email);
   }
 }
