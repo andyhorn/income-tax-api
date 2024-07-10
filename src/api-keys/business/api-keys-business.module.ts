@@ -3,7 +3,7 @@ import { UsersDataModule } from 'src/users/data/users-data.module';
 import { ApiKeyDataModule } from '../data/api-key-data.module';
 import { ApiKeysService } from './api-keys.service';
 import { ConfigModule } from '@nestjs/config';
-import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
+import { ApiKeyGuard } from 'src/api-keys/network/api-key.guard';
 
 @Module({
   imports: [ApiKeyDataModule, UsersDataModule, ConfigModule],

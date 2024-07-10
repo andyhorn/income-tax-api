@@ -15,7 +15,7 @@ import { AuthGuard } from 'src/auth/network/auth.guard';
 import { Role, UserRoleGuard } from 'src/auth/network/user-role.guard';
 import { MaybeParseFilingStatusPipe } from 'src/pipes/maybe-parse-filing-status.pipe';
 import { MaybeParseIntPipe } from 'src/pipes/maybe-parse-int.pipe';
-import { ApiKeyGuard } from 'src/shared/network/api-key.guard';
+import { ApiKeyGuard } from 'src/api-keys/network/api-key.guard';
 import { UserRole } from 'src/users/data/user.interface';
 import { FederalTaxService } from '../business/federal-tax.service';
 import { FederalTaxDtoConverter } from './federal-tax-dto.converter';
