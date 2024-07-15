@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="row py-5 text-center">
+        <h2>Login</h2>
+    </div>
+    <form [formGroup]="form">
+        <div class="row gy-3">
+            <div class="col-6 offset-3">
+                <div class="form-floating">
+                    <input type="email" name="email" id="email" class="form-control" placeholder="email@domain.com"
+                        autocomplete="email" formControlName="email">
+                    <label for="email">Email</label>
+                </div>
+                <ng-container *ngIf="form.get('email')?.hasError && form.get('email')?.touched">
+                    <ng-container *ngIf="form.get('email')?.getError('required')">
+                        <p class="m-1 text-danger">Please enter your email</p>
+                    </ng-container>
+                    <ng-container *ngIf="form.get('email')?.getError('email')">
+                        <p class="m-1 text-danger">Must be a valid email</p>
+                    </ng-container>
+                </ng-container>
+            </div>
+            <div class="col-6 offset-3">
+                <div class="form-floating">
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Password"
+                        autocomplete="current-password" formControlName="password">
+                    <label for="password">Password</label>
+                </div>
+                <ng-container *ngIf="form.get('password')?.hasError && form.get('password')?.touched">
+                    <ng-container *ngIf="form.get('password')?.getError('required')">
+                        <p class="m-1 text-danger">Please enter your password</p>
+                    </ng-container>
+                </ng-container>
+            </div>
+            <div class="col-6 offset-3 d-flex justify-content-between">
+                <button class="btn btn-primary" (click)="login()">Login</button>
+                <a class="btn btn-link" routerLink="/register">Need to register?</a>
+            </div>
+        </div>
+    </form>
+</div>
