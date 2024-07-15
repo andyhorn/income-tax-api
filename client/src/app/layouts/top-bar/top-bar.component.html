@@ -1,0 +1,10 @@
+<ul ngbNav class="nav align-items-center d-flex bg-light p-3">
+    <a class="pointer navbar-brand" (click)="router.navigateByUrl('/')">Income Tax API</a>
+    <span class="flex-grow-1"></span>
+    <li ngbNavItem>
+        <button ngbNavLink (click)="router.navigateByUrl('/login')">Login</button>
+    </li>
+    <li ngbNavItem>
+        <button ngbNavLink (click)="router.navigateByUrl('/register')">Register</button>
+    </li>
+</ul>
