@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -9,12 +9,13 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 function mustMatchValidator(field1: string, field2: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const value1 = (control as FormGroup).controls[field1];
-    const value2 = (control as FormGroup).controls[field2];
+    const value1 = (control as FormGroup).controls[field1].value;
+    const value2 = (control as FormGroup).controls[field2].value;
 
     if (value1 != value2) {
       return {
@@ -45,8 +46,13 @@ export class RegisterComponent {
         validators: [Validators.required],
       }),
     },
-    [mustMatchValidator('password', 'confirmPassword')],
+    {
+      validators: [mustMatchValidator('password', 'confirmPassword')],
+    },
   );
+
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   public submit(): void {
     this.form.markAllAsTouched();
@@ -55,10 +61,16 @@ export class RegisterComponent {
       return;
     }
 
-    const email = this.form.value['email'];
-    const password = this.form.value['password'];
+    const email = this.form.value['email']!;
+    const password = this.form.value['password']!;
+    const confirmPassword = this.form.value['confirmPassword']!;
 
-    console.log(email);
-    console.log(password);
+    this.authService
+      .register({
+        email,
+        password,
+        confirmPassword,
+      })
+      .subscribe(() => this.router.navigateByUrl('/'));
   }
 }
