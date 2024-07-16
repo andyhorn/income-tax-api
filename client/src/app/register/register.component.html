@@ -42,7 +42,7 @@
                         <p class="m-1 text-danger">Please confirm your password</p>
                     </ng-container>
                 </ng-container>
-                <ng-container *ngIf="form.getError('must-match') && form.touched">
+                <ng-container *ngIf="!!form.getError('must-match') && form.touched">
                     <p class="m-1 text-danger">Passwords must match</p>
                 </ng-container>
             </div>
