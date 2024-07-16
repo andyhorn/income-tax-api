@@ -1,12 +1,13 @@
 import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +26,12 @@ export class LoginComponent {
     }),
   });
 
+  @ViewChild('email')
+  private readonly email!: ElementRef;
+
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
   public login(): void {
     this.form.markAllAsTouched();
 
@@ -32,10 +39,17 @@ export class LoginComponent {
       return;
     }
 
-    const email = this.form.get('email')?.value;
-    const password = this.form.get('password')?.value;
+    const email = this.form.get('email')!.value!;
+    const password = this.form.get('password')!.value!;
 
-    console.log(email);
-    console.log(password);
+    this.authService.login({ email, password }).subscribe({
+      error: () => {
+        (this.email.nativeElement as HTMLInputElement).focus();
+        this.form.reset();
+      },
+      complete: () => {
+        this.router.navigateByUrl('/');
+      },
+    });
   }
 }

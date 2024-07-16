@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, Observable, shareReplay, tap, throwError } from 'rxjs';
 import { ToastService } from '../shared/toast/toast.service';
 import { TokenService } from './token.service';
 
@@ -8,6 +8,11 @@ export type RegisterParams = {
   email: string;
   password: string;
   confirmPassword: string;
+};
+
+export type LoginParams = {
+  email: string;
+  password: string;
 };
 
 export type AuthenticationResult = {
@@ -35,6 +40,7 @@ export class AuthService {
         confirmPassword,
       })
       .pipe(
+        shareReplay(),
         catchError((err: HttpErrorResponse) => {
           if (err.error.error) {
             const { error } = err.error;
@@ -50,6 +56,42 @@ export class AuthService {
         tap((result) => {
           this.tokenService.write(result.access, 'access');
           this.tokenService.write(result.refresh, 'refresh');
+          this.toastService.show({
+            message: 'Registered successfully!',
+            type: 'success',
+          });
+        }),
+      );
+  }
+
+  public login({
+    email,
+    password,
+  }: LoginParams): Observable<AuthenticationResult> {
+    return this.http
+      .post<AuthenticationResult>('auth/login', { email, password })
+      .pipe(
+        shareReplay(),
+        catchError((err: HttpErrorResponse) => {
+          console.error(err);
+          const { error } = err.error;
+
+          if (error) {
+            this.toastService.show({
+              message: error,
+              type: 'danger',
+            });
+          }
+
+          return throwError(() => err);
+        }),
+        tap((result) => {
+          this.tokenService.write(result.access, 'access');
+          this.tokenService.write(result.refresh, 'refresh');
+          this.toastService.show({
+            message: 'Logged in!',
+            type: 'success',
+          });
         }),
       );
   }
