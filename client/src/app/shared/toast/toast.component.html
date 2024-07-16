@@ -1,0 +1,6 @@
+<ng-container *ngIf="toasts$ | async as toasts">
+    <ngb-toast *ngFor="let toast of toasts" [ngClass]="['bg-' + toast.type]" class="text-light" [delay]="3000"
+        [autohide]="true" (hidden)="remove(toast)">
+        {{ toast.message }}
+    </ngb-toast>
+</ng-container>
