@@ -10,7 +10,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../auth/business/auth.service';
 
 function mustMatchValidator(field1: string, field2: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
