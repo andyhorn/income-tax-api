@@ -1,8 +1,8 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../auth/business/auth.service';
-import { AsyncPipe, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-top-bar',
@@ -14,4 +14,10 @@ import { AsyncPipe, NgIf } from '@angular/common';
 export class AppTopBarComponent {
   router = inject(Router);
   authService = inject(AuthService);
+
+  public logout(): void {
+    this.authService
+      .logout()
+      .subscribe(() => this.router.navigateByUrl('/login'));
+  }
 }

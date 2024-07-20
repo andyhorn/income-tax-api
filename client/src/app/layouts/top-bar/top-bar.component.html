@@ -8,6 +8,6 @@
         <button ngbNavLink (click)="router.navigateByUrl('/register')">Register</button>
     </li>
     <li ngbNavItem *ngIf="authService.accessToken$ | async">
-        <button ngbNavLink (click)="authService.logout()">Logout</button>
+        <button ngbNavLink (click)="logout()">Logout</button>
     </li>
 </ul>
