@@ -1,10 +1,13 @@
 <ul ngbNav class="nav align-items-center d-flex bg-light p-3">
     <a class="pointer navbar-brand" (click)="router.navigateByUrl('/')">Income Tax API</a>
     <span class="flex-grow-1"></span>
-    <li ngbNavItem>
+    <li ngbNavItem *ngIf="!(authService.accessToken$ | async)">
         <button ngbNavLink (click)="router.navigateByUrl('/login')">Login</button>
     </li>
-    <li ngbNavItem>
+    <li ngbNavItem *ngIf="!(authService.accessToken$ | async)">
         <button ngbNavLink (click)="router.navigateByUrl('/register')">Register</button>
+    </li>
+    <li ngbNavItem *ngIf="authService.accessToken$ | async">
+        <button ngbNavLink (click)="authService.logout()">Logout</button>
     </li>
 </ul>
