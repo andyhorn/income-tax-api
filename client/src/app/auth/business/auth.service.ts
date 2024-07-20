@@ -1,5 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, Observable, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  Observable,
+  of,
+  tap,
+} from 'rxjs';
 import {
   AuthLoginParameters,
   AuthRegisterParameters,
@@ -40,9 +46,13 @@ export class AuthService {
     }
   }
 
-  public logout(): void {
-    this.tokenService.delete();
-    this.accessTokenSubject.next(null);
+  public logout(): Observable<any> {
+    return of(0).pipe(
+      tap(() => {
+        this.tokenService.delete();
+        this.accessTokenSubject.next(null);
+      }),
+    );
   }
 
   public register(params: AuthRegisterParameters): Observable<AuthUserTokens> {
