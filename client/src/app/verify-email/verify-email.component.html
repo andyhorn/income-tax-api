@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="row py-5 text-center">
+        <h2>Verify your email</h2>
+    </div>
+    <form [formGroup]="form">
+        <div class="row gy-3">
+            <div class="col-6 offset-3">
+                <p class="text-center">Please enter the PIN that was sent to your email.</p>
+                <div class="form-floating">
+                    <input #pin type="number" name="pin" class="form-control" placeholder="1234"
+                        [formControlName]="formKeys.PIN">
+                    <label for="pin">PIN</label>
+                </div>
+            </div>
+            <div class="col-6 offset-3 d-grid">
+                <button class="btn btn-primary" (click)="submit()">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
