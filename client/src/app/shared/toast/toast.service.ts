@@ -25,8 +25,4 @@ export class ToastService {
       ...this.toastsSubject.getValue().filter((t) => t != toast),
     ]);
   }
-
-  constructor() {
-    console.log('ToastService created');
-  }
 }
