@@ -22,3 +22,7 @@ export interface UserTokensDto {
   access: string;
   refresh: string;
 }
+
+export interface RefreshTokensDto {
+  token: string;
+}

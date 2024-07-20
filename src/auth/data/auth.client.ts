@@ -69,6 +69,19 @@ export class AuthClient {
     };
   }
 
+  public async refreshTokens(token: string): Promise<UserTokens> {
+    const { data, error } = await this.supabaseClient.auth.refreshSession({
+      refresh_token: token,
+    });
+
+    this.handleError(error);
+
+    return {
+      access: data.session.access_token,
+      refresh: data.session.refresh_token,
+    };
+  }
+
   private handleError(error?: AuthError): void {
     if (!error) {
       return;

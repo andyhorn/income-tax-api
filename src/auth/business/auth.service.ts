@@ -32,4 +32,8 @@ export class AuthService {
   public async verifyEmail(email: string, token: string): Promise<UserTokens> {
     return await this.authClient.verifyEmail(email, token);
   }
+
+  public async refresh(token: string): Promise<UserTokens> {
+    return await this.authClient.refreshTokens(token);
+  }
 }

@@ -3,6 +3,7 @@ import { UserDto } from 'src/users/network/user.dto';
 import { AuthService } from '../business/auth.service';
 import { UserTokens } from '../data/auth-data.interface';
 import {
+  RefreshTokensDto,
   ResendEmailVerificationDto,
   SignInDto,
   SignUpDto,
@@ -46,6 +47,18 @@ export class AuthController {
     @Body() { email, token }: VerifyEmailDto,
   ): Promise<UserTokensDto> {
     const tokens = await this.authService.verifyEmail(email, token);
+
+    return {
+      access: tokens.access,
+      refresh: tokens.refresh,
+    };
+  }
+
+  @Post('refresh')
+  public async refreshTokens(
+    @Body() { token }: RefreshTokensDto,
+  ): Promise<UserTokensDto> {
+    const tokens = await this.authService.refresh(token);
 
     return {
       access: tokens.access,
