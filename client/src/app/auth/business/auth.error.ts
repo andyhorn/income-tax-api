@@ -7,7 +7,7 @@ export class AuthError extends Error {
   }
 
   public static fromErrorResponse(response: HttpErrorResponse): AuthError {
-    switch (response.error.error) {
+    switch (response.error.message) {
       case 'email-in-use':
         return new EmailInUseError();
       case 'invalid-credentials':
