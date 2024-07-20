@@ -5,6 +5,7 @@ import { AuthService } from './auth/business/auth.service';
 import { HomeComponent } from './home.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 type AuthRequirement = 'authenticated' | 'unauthenticated';
 
@@ -23,6 +24,10 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => LoginComponent,
     canActivate: [authGuard('unauthenticated')],
+  },
+  {
+    path: 'verify-email',
+    loadComponent: () => VerifyEmailComponent,
   },
 ];
 
