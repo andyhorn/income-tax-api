@@ -9,6 +9,7 @@ import {
 import {
   AuthLoginParameters,
   AuthRegisterParameters,
+  AuthResendCodeParameters,
   AuthUserTokens,
 } from '../data/auth-data.interface';
 import { AuthClient } from '../data/auth.client';
@@ -33,7 +34,7 @@ export class AuthService {
     const refresh = this.tokenService.read();
 
     if (refresh) {
-      this.client.refresh(refresh).subscribe({
+      this.client.refreshUserTokens(refresh).subscribe({
         next: (tokens) => {
           this.tokenService.write(tokens.refresh);
           this.accessTokenSubject.next(tokens.access);
@@ -67,5 +68,11 @@ export class AuthService {
       tap((tokens) => this.tokenService.write(tokens.refresh)),
       tap((tokens) => this.accessTokenSubject.next(tokens.access)),
     );
+  }
+
+  public resendVerificationCode(
+    params: AuthResendCodeParameters,
+  ): Observable<boolean> {
+    return this.client.resendEmailVerificationCode(params);
   }
 }

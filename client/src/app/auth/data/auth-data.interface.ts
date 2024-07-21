@@ -17,3 +17,9 @@ export interface AuthUserTokens {
   access: string;
   refresh: string;
 }
+
+export interface AuthResendCodeDto {
+  email: string;
+}
+
+export interface AuthResendCodeParameters extends AuthResendCodeDto {}

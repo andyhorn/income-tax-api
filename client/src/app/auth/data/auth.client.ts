@@ -27,13 +27,15 @@ export class AuthClient {
     );
   }
 
-  public refresh(token: string): Observable<AuthUserTokens> {
+  public refreshUserTokens(refreshToken: string): Observable<AuthUserTokens> {
     return this.executeRequest(
-      this.http.post<AuthUserTokens>('auth/refresh', { token }),
+      this.http.post<AuthUserTokens>('auth/refresh', { token: refreshToken }),
     );
   }
 
-  public resend(params: AuthResendCodeParameters): Observable<boolean> {
+  public resendEmailVerificationCode(
+    params: AuthResendCodeParameters,
+  ): Observable<boolean> {
     return this.executeRequest(this.http.put<any>('auth/resend', params));
   }
 
