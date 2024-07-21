@@ -7,7 +7,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import {
+  AuthError,
+  EmailNotConfirmedError,
+  InvalidCredentialsError,
+} from '../auth/business/auth.error';
 import { AuthService } from '../auth/business/auth.service';
+import { ToastService } from '../shared/toast/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +37,7 @@ export class LoginComponent {
 
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   public login(): void {
     this.form.markAllAsTouched();
@@ -43,12 +50,31 @@ export class LoginComponent {
     const password = this.form.get('password')!.value!;
 
     this.authService.login({ email, password }).subscribe({
-      error: () => {
-        (this.email.nativeElement as HTMLInputElement).focus();
-        this.form.reset();
+      error: (err: AuthError) => {
+        if (err instanceof EmailNotConfirmedError) {
+          this.router.navigateByUrl('/verify-email', {
+            state: {
+              email,
+            },
+          });
+
+          return;
+        }
+
+        if (err instanceof InvalidCredentialsError) {
+          this.form.setErrors({
+            'invalid-credentials': true,
+          });
+
+          return;
+        }
       },
       complete: () => {
         this.router.navigateByUrl('/');
+        this.toastService.show({
+          message: 'Logged in',
+          type: 'success',
+        });
       },
     });
   }
