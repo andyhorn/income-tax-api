@@ -11,18 +11,18 @@ import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { bootstrapXCircle } from '@ng-icons/bootstrap-icons';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { delayWhen, finalize, timer } from 'rxjs';
+import { finalize } from 'rxjs';
 import { HomeRoute } from '../app.routes';
 import { AuthError } from '../auth/business/auth.error';
 import { AuthService } from '../auth/business/auth.service';
 import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.component';
+import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
 import { ToastService } from '../shared/toast/toast.service';
 import {
   buildVerifyEmailForm,
   VerifyEmailFormData,
   VerifyEmailFormKeys,
 } from './verify-email-form';
-import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
 
 export const PIN_LENGTH = 6;
 
