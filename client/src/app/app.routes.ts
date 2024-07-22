@@ -64,7 +64,7 @@ export const routes: Routes = [
     canActivate: [
       isLoggedOut(),
       hasEmail(),
-      isComingFrom(new LoginRoute().path()),
+      isComingFrom(new LoginRoute().fullPath()),
     ],
   },
 ];
