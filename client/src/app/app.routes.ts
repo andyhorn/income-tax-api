@@ -33,9 +33,7 @@ export class VerifyEmailRouteData extends SimpleRouteData {
     super();
   }
 
-  public override parameters = {
-    email: this.email,
-  };
+  public override state = { email: this.email };
 }
 
 export class VerifyEmailRoute extends SimpleDataRoute<VerifyEmailRouteData> {
@@ -51,7 +49,7 @@ export const routes: Routes = [
     canActivate: [isLoggedIn()],
   },
   {
-    path: new RegisterRoute().fullPath(),
+    path: new RegisterRoute().path(),
     loadComponent: () => RegisterComponent,
     canActivate: [isLoggedOut()],
   },

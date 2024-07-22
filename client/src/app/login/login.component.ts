@@ -14,6 +14,11 @@ import {
 } from '../auth/business/auth.error';
 import { AuthService } from '../auth/business/auth.service';
 import { ToastService } from '../shared/toast/toast.service';
+import {
+  HomeRoute,
+  VerifyEmailRoute,
+  VerifyEmailRouteData,
+} from '../app.routes';
 
 @Component({
   selector: 'app-login',
@@ -52,11 +57,10 @@ export class LoginComponent {
     this.authService.login({ email, password }).subscribe({
       error: (err: AuthError) => {
         if (err instanceof EmailNotConfirmedError) {
-          this.router.navigateByUrl('/verify-email', {
-            state: {
-              email,
-            },
-          });
+          new VerifyEmailRoute().go(
+            this.router,
+            new VerifyEmailRouteData('email'),
+          );
 
           return;
         }
@@ -70,7 +74,7 @@ export class LoginComponent {
         }
       },
       complete: () => {
-        this.router.navigateByUrl('/');
+        new HomeRoute().go(this.router);
         this.toastService.show({
           message: 'Logged in',
           type: 'success',

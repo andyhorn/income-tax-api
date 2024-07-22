@@ -1,6 +1,9 @@
+import { Router } from '@angular/router';
+
 export abstract class SimpleRouteData {
   public parameters: { [key: string]: string } = {};
   public query: { [key: string]: string } = {};
+  public state?: { [key: string]: any };
 }
 
 export abstract class BaseRoute {
@@ -32,6 +35,10 @@ export class SimpleRoute extends BaseRoute {
     super(segment);
   }
 
+  public go(router: Router): void {
+    router.navigateByUrl(this.generateFullPath());
+  }
+
   public fullPath(): string {
     return this.generateFullPath();
   }
@@ -44,6 +51,12 @@ export interface ChildRoute<T extends SimpleRoute> {
 export class SimpleDataRoute<T extends SimpleRouteData> extends BaseRoute {
   constructor(segment: string) {
     super(segment);
+  }
+
+  public go(router: Router, data: T): void {
+    router.navigateByUrl(this.fullPath(data), {
+      state: data.state,
+    });
   }
 
   public fullPath(data: T): string {
