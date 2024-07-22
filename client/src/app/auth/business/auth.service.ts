@@ -1,13 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  map,
-  Observable,
-  of,
-  skip,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, tap } from 'rxjs';
 import {
   AuthLoginParameters,
   AuthRegisterParameters,
@@ -25,13 +17,14 @@ import { TokenService } from './token.service';
 export class AuthService {
   private readonly tokenService = inject(TokenService);
   private readonly client = inject(AuthClient);
-  private readonly accessTokenSubject = new BehaviorSubject<string | null>(
-    null,
-  );
+  private readonly accessTokenSubject = new BehaviorSubject<
+    string | null | undefined
+  >(undefined);
 
-  public readonly accessToken$ = this.accessTokenSubject
-    .asObservable()
-    .pipe(skip(1), distinctUntilChanged());
+  public readonly accessToken$: Observable<string | null> =
+    this.accessTokenSubject
+      .asObservable()
+      .pipe(filter((token) => token !== undefined));
 
   constructor() {
     const refresh = this.tokenService.read();
@@ -47,6 +40,8 @@ export class AuthService {
           this.accessTokenSubject.next(null);
         },
       });
+    } else {
+      this.accessTokenSubject.next(null);
     }
   }
 
