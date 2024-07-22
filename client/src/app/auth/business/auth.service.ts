@@ -58,11 +58,8 @@ export class AuthService {
     );
   }
 
-  public register(params: AuthRegisterParameters): Observable<AuthUserTokens> {
-    return this.client.register(params).pipe(
-      tap((tokens) => this.tokenService.write(tokens.refresh)),
-      tap((tokens) => this.accessTokenSubject.next(tokens.access)),
-    );
+  public register(params: AuthRegisterParameters): Observable<boolean> {
+    return this.client.register(params);
   }
 
   public login(params: AuthLoginParameters): Observable<AuthUserTokens> {

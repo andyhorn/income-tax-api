@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, shareReplay, throwError } from 'rxjs';
+import { catchError, map, Observable, shareReplay, throwError } from 'rxjs';
 import { AuthError } from '../business/auth.error';
 import {
   AuthLoginParameters,
@@ -16,9 +16,9 @@ import {
 export class AuthClient {
   private readonly http = inject(HttpClient);
 
-  public register(params: AuthRegisterParameters): Observable<AuthUserTokens> {
+  public register(params: AuthRegisterParameters): Observable<boolean> {
     return this.executeRequest(
-      this.http.post<AuthUserTokens>('auth/sign-up', params),
+      this.http.post<any>('auth/sign-up', params).pipe(map(() => true)),
     );
   }
 
