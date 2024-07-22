@@ -6,20 +6,22 @@
         <div class="row gy-3">
             <div class="col-6 offset-3">
                 <p class="text-center">Please enter the PIN that was sent to your email.</p>
-                <div class="form-floating">
-                    <input #pin type="number" name="pin" class="form-control" placeholder="1234"
-                        [formControlName]="formKeys.PIN">
-                    <label for="pin">PIN</label>
+                <div class="d-flex justify-content-evenly align-items-center">
+                    <ng-container [formArrayName]="formKeys.PIN">
+                        <ng-container *ngFor="let control of digits.controls; let i = index;">
+                            <input #digit type="text" class="form-control mx-1" maxlength="1" minlength="1"
+                                [formControl]="control" [value]="control.value" (input)="onChanged(control, i)"
+                                (paste)="onPaste($event, i)" (keyup.enter)="submit()">
+                        </ng-container>
+                    </ng-container>
                 </div>
             </div>
-            <div class="col-6 offset-3 d-grid">
+            <div class="col-6 offset-3 d-flex justify-content-between align-items-center">
                 <button class="btn btn-primary" (click)="submit()">Submit</button>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-6 offset-3 d-flex justify-content-end align-items-center">
-                <p class="m-0">Didn't get a code?</p>
-                <button class="btn btn-link" (click)="resend()">Resend</button>
+                <div class="d-flex align-items-center">
+                    <p class="m-0">Didn't get a code?</p>
+                    <button class="btn btn-link" (click)="resend()">Resend</button>
+                </div>
             </div>
         </div>
     </form>
