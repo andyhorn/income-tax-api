@@ -36,7 +36,7 @@ export class AuthClient {
   public resendEmailVerificationCode(
     params: AuthResendCodeParameters,
   ): Observable<boolean> {
-    return this.executeRequest(this.http.put<any>('auth/resend', params));
+    return this.executeRequest(this.http.post<any>('auth/resend', params));
   }
 
   private executeRequest<T>(obs: Observable<T>): Observable<T> {
