@@ -64,7 +64,9 @@ export const routes: Routes = [
     canActivate: [
       isLoggedOut(),
       hasEmail(),
-      isComingFrom(new LoginRoute().fullPath()),
+      isComingFrom(new LoginRoute().fullPath(), (router) =>
+        new LoginRoute().go(router),
+      ),
     ],
   },
 ];
@@ -145,9 +147,18 @@ function hasState(
   };
 }
 
-function isComingFrom(route: string): CanActivateFn {
+function isComingFrom(
+  route: string,
+  onFailure: (router: Router) => void,
+): CanActivateFn {
   return (_, __) => {
     const router = inject(Router);
-    return router.url == route;
+    const match = router.url == route;
+
+    if (!match) {
+      onFailure(router);
+    }
+
+    return match;
   };
 }
