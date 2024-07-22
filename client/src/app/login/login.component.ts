@@ -59,7 +59,7 @@ export class LoginComponent {
         if (err instanceof EmailNotConfirmedError) {
           new VerifyEmailRoute().go(
             this.router,
-            new VerifyEmailRouteData('email'),
+            new VerifyEmailRouteData(email),
           );
 
           return;
