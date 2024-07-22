@@ -113,6 +113,10 @@ export class VerifyEmailComponent implements AfterViewInit {
         )
         .subscribe({
           next: () => {
+            this.toastService.show({
+              message: 'Email verified!',
+              type: 'success',
+            });
             new HomeRoute().go(this.router);
           },
           error: () => {
