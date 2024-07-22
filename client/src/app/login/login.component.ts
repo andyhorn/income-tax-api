@@ -19,11 +19,14 @@ import {
   VerifyEmailRoute,
   VerifyEmailRouteData,
 } from '../app.routes';
+import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.component';
+import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, NgIf],
+  imports: [RouterLink, ReactiveFormsModule, NgIf, BusyIndicatorComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -37,12 +40,11 @@ export class LoginComponent {
     }),
   });
 
-  @ViewChild('email')
-  private readonly email!: ElementRef;
-
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
+
+  public busy = false;
 
   public login(): void {
     this.form.markAllAsTouched();
@@ -54,32 +56,39 @@ export class LoginComponent {
     const email = this.form.get('email')!.value!;
     const password = this.form.get('password')!.value!;
 
-    this.authService.login({ email, password }).subscribe({
-      error: (err: AuthError) => {
-        if (err instanceof EmailNotConfirmedError) {
-          new VerifyEmailRoute().go(
-            this.router,
-            new VerifyEmailRouteData(email),
-          );
+    this.busy = true;
+    this.authService
+      .login({ email, password })
+      .pipe(
+        minimumDuration(),
+        finalize(() => (this.busy = false)),
+      )
+      .subscribe({
+        error: (err: AuthError) => {
+          if (err instanceof EmailNotConfirmedError) {
+            new VerifyEmailRoute().go(
+              this.router,
+              new VerifyEmailRouteData(email),
+            );
 
-          return;
-        }
+            return;
+          }
 
-        if (err instanceof InvalidCredentialsError) {
-          this.form.setErrors({
-            'invalid-credentials': true,
+          if (err instanceof InvalidCredentialsError) {
+            this.form.setErrors({
+              'invalid-credentials': true,
+            });
+
+            return;
+          }
+        },
+        complete: () => {
+          new HomeRoute().go(this.router);
+          this.toastService.show({
+            message: 'Logged in',
+            type: 'success',
           });
-
-          return;
-        }
-      },
-      complete: () => {
-        new HomeRoute().go(this.router);
-        this.toastService.show({
-          message: 'Logged in',
-          type: 'success',
-        });
-      },
-    });
+        },
+      });
   }
 }

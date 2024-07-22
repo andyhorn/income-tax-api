@@ -6,8 +6,8 @@
         <div class="row gy-3">
             <div class="col-6 offset-3">
                 <div class="form-floating">
-                    <input #email type="email" name="email" id="email" class="form-control"
-                        placeholder="email@domain.com" autocomplete="email" formControlName="email">
+                    <input type="email" name="email" id="email" class="form-control" placeholder="email@domain.com"
+                        autocomplete="email" formControlName="email">
                     <label for="email">Email</label>
                 </div>
                 <ng-container *ngIf="form.get('email')?.hasError && form.get('email')?.touched">
@@ -38,7 +38,10 @@
                 </ng-container>
             </div>
             <div class="col-6 offset-3 d-flex justify-content-between">
-                <button class="btn btn-primary" (click)="login()">Login</button>
+                <button class="btn btn-primary" (click)="login()">
+                    <app-busy-indicator [visible]="busy"></app-busy-indicator>
+                    <ng-container *ngIf="!busy">Submit</ng-container>
+                </button>
                 <a class="btn btn-link" routerLink="/register">Need to register?</a>
             </div>
         </div>
