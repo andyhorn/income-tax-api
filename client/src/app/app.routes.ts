@@ -106,6 +106,7 @@ function hasAuthState(
     const authService = inject(AuthService);
 
     return authService.accessToken$.pipe(
+      distinctUntilChanged(),
       map((token) => {
         if (!!token && req == 'authenticated') {
           return true;
@@ -117,7 +118,6 @@ function hasAuthState(
 
         return onFailure(token, router, authService);
       }),
-      distinctUntilChanged(),
     );
   };
 }

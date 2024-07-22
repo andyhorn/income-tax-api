@@ -5,6 +5,7 @@ import {
   map,
   Observable,
   of,
+  skip,
   tap,
 } from 'rxjs';
 import {
@@ -30,7 +31,7 @@ export class AuthService {
 
   public readonly accessToken$ = this.accessTokenSubject
     .asObservable()
-    .pipe(distinctUntilChanged());
+    .pipe(skip(1), distinctUntilChanged());
 
   constructor() {
     const refresh = this.tokenService.read();
