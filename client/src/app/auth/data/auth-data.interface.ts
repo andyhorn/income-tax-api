@@ -23,3 +23,10 @@ export interface AuthResendCodeDto {
 }
 
 export interface AuthResendCodeParameters extends AuthResendCodeDto {}
+
+export interface AuthVerifyEmailDto {
+  email: string;
+  token: string;
+}
+
+export interface AuthVerifyEmailParameters extends AuthVerifyEmailDto {}

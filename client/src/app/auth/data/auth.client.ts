@@ -7,6 +7,7 @@ import {
   AuthRegisterParameters,
   AuthResendCodeParameters,
   AuthUserTokens,
+  AuthVerifyEmailParameters,
 } from './auth-data.interface';
 
 @Injectable({
@@ -37,6 +38,14 @@ export class AuthClient {
     params: AuthResendCodeParameters,
   ): Observable<boolean> {
     return this.executeRequest(this.http.post<any>('auth/resend', params));
+  }
+
+  public verifyEmail(
+    params: AuthVerifyEmailParameters,
+  ): Observable<AuthUserTokens> {
+    return this.executeRequest(
+      this.http.post<AuthUserTokens>('auth/verify', params),
+    );
   }
 
   private executeRequest<T>(obs: Observable<T>): Observable<T> {

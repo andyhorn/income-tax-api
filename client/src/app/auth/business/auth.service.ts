@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import {
   BehaviorSubject,
   distinctUntilChanged,
+  map,
   Observable,
   of,
   tap,
@@ -11,6 +12,7 @@ import {
   AuthRegisterParameters,
   AuthResendCodeParameters,
   AuthUserTokens,
+  AuthVerifyEmailParameters,
 } from '../data/auth-data.interface';
 import { AuthClient } from '../data/auth.client';
 import { AuthError } from './auth.error';
@@ -74,5 +76,13 @@ export class AuthService {
     params: AuthResendCodeParameters,
   ): Observable<boolean> {
     return this.client.resendEmailVerificationCode(params);
+  }
+
+  public verifyEmail(params: AuthVerifyEmailParameters): Observable<boolean> {
+    return this.client.verifyEmail(params).pipe(
+      tap((tokens) => this.tokenService.write(tokens.refresh)),
+      tap((tokens) => this.accessTokenSubject.next(tokens.access)),
+      map(() => true),
+    );
   }
 }

@@ -11,10 +11,15 @@ import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { bootstrapXCircle } from '@ng-icons/bootstrap-icons';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { HomeRoute } from '../app.routes';
 import { AuthError } from '../auth/business/auth.error';
 import { AuthService } from '../auth/business/auth.service';
 import { ToastService } from '../shared/toast/toast.service';
-import { buildVerifyEmailForm, VerifyEmailFormKeys } from './verify-email-form';
+import {
+  buildVerifyEmailForm,
+  VerifyEmailFormData,
+  VerifyEmailFormKeys,
+} from './verify-email-form';
 
 export const PIN_LENGTH = 6;
 
@@ -83,7 +88,23 @@ export class VerifyEmailComponent implements AfterViewInit {
     this.form.markAllAsTouched();
 
     if (this.form.valid) {
-      console.log(this.form);
+      const data = VerifyEmailFormData.fromFormGroup(this.form);
+      this.authService
+        .verifyEmail({
+          email: this.email!,
+          token: data.pin,
+        })
+        .subscribe({
+          next: () => {
+            new HomeRoute().go(this.router);
+          },
+          error: () => {
+            this.toastService.show({
+              message: 'An error occurred. Please try again.',
+              type: 'danger',
+            });
+          },
+        });
     }
   }
 
