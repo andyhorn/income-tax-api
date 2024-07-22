@@ -73,40 +73,32 @@ export const routes: Routes = [
 ];
 
 function isLoggedIn(): CanActivateFn {
-  return hasAuthState('authenticated', (token, router, service) => {
-    router.navigateByUrl(new LoginRoute().fullPath());
-    return false;
+  return hasAuthState('authenticated', (router) => {
+    return router.parseUrl(new LoginRoute().fullPath());
   });
 }
 
 function isLoggedOut(): CanActivateFn {
-  return hasAuthState('unauthenticated', (token, router, service) => {
-    router.navigateByUrl(new HomeRoute().fullPath());
-    return false;
+  return hasAuthState('unauthenticated', (router) => {
+    return router.parseUrl(new HomeRoute().fullPath());
   });
 }
 
 function hasEmail(): CanActivateFn {
   return hasState('email', (router) => {
-    router.navigateByUrl(new LoginRoute().fullPath());
-    return false;
+    return router.parseUrl(new LoginRoute().fullPath());
   });
 }
 
 function hasAuthState(
   req: AuthStateType,
-  onFailure: (
-    token: string | null,
-    router: Router,
-    authService: AuthService,
-  ) => GuardResult,
+  onFailure: (router: Router) => GuardResult,
 ): CanActivateFn {
   return (_, __) => {
     const router = inject(Router);
     const authService = inject(AuthService);
 
     return authService.accessToken$.pipe(
-      distinctUntilChanged(),
       map((token) => {
         if (!!token && req == 'authenticated') {
           return true;
@@ -116,7 +108,7 @@ function hasAuthState(
           return true;
         }
 
-        return onFailure(token, router, authService);
+        return onFailure(router);
       }),
     );
   };
