@@ -22,9 +22,10 @@ export class AuthService {
   >(undefined);
 
   public readonly accessToken$: Observable<string | null> =
-    this.accessTokenSubject
-      .asObservable()
-      .pipe(filter((token) => token !== undefined));
+    this.accessTokenSubject.asObservable().pipe(
+      filter((token) => token !== undefined),
+      map((token) => token as string | null),
+    );
 
   constructor() {
     const refresh = this.tokenService.read();
