@@ -24,7 +24,7 @@ export class VerifyEmailFormData {
 
   public static fromFormGroup(form: FormGroup): VerifyEmailFormData {
     const pinControl = form.get(VerifyEmailFormKeys.PIN) as PinArray;
-    const digits = pinControl.value.join();
+    const digits = pinControl.value.join('');
 
     return new VerifyEmailFormData(digits);
   }
