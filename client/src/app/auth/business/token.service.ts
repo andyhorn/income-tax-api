@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-const REFRESH_TOKEN_KEY = 'refresh-token;';
+const REFRESH_TOKEN_KEY = 'refresh-token';
 
 @Injectable({
   providedIn: 'root',
