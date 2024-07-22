@@ -18,6 +18,9 @@
                         <p class="m-1 text-danger">Must be a valid email</p>
                     </ng-container>
                 </ng-container>
+                <ng-container *ngIf="form.getError('invalid-credentials')">
+                    <p class="m-1 text-danger">Invalid credentials</p>
+                </ng-container>
             </div>
             <div class="col-6 offset-3">
                 <div class="form-floating">
@@ -29,6 +32,9 @@
                     <ng-container *ngIf="form.get('password')?.getError('required')">
                         <p class="m-1 text-danger">Please enter your password</p>
                     </ng-container>
+                </ng-container>
+                <ng-container *ngIf="form.getError('invalid-credentials')">
+                    <p class="m-1 text-danger">Invalid credentials</p>
                 </ng-container>
             </div>
             <div class="col-6 offset-3 d-flex justify-content-between">
