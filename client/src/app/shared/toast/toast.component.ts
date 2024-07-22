@@ -11,7 +11,7 @@ import { Toast, ToastService } from './toast.service';
     `
       :host {
         position: fixed;
-        top: 0;
+        bottom: 0;
         right: 0;
         margin: 0.5rem;
         z-index: 1000;
