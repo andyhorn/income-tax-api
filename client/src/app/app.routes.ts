@@ -1,54 +1,93 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, GuardResult, Router, Routes } from '@angular/router';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs';
 import { AuthService } from './auth/business/auth.service';
 import { HomeComponent } from './home.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { SimpleDataRoute, SimpleRoute, SimpleRouteData } from './routes/routes';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 type AuthStateType = 'authenticated' | 'unauthenticated';
 
+export class HomeRoute extends SimpleRoute {
+  constructor() {
+    super('');
+  }
+}
+
+export class LoginRoute extends SimpleRoute {
+  constructor() {
+    super('login');
+  }
+}
+
+export class RegisterRoute extends SimpleRoute {
+  constructor() {
+    super('register');
+  }
+}
+
+export class VerifyEmailRouteData extends SimpleRouteData {
+  constructor(private readonly email: string) {
+    super();
+  }
+
+  public override parameters = {
+    email: this.email,
+  };
+}
+
+export class VerifyEmailRoute extends SimpleDataRoute<VerifyEmailRouteData> {
+  constructor() {
+    super('verify-email');
+  }
+}
+
 export const routes: Routes = [
   {
-    path: '',
+    path: new HomeRoute().path(),
     loadComponent: () => HomeComponent,
     canActivate: [isLoggedIn()],
   },
   {
-    path: 'register',
+    path: new RegisterRoute().fullPath(),
     loadComponent: () => RegisterComponent,
     canActivate: [isLoggedOut()],
   },
   {
-    path: 'login',
+    path: new LoginRoute().path(),
     loadComponent: () => LoginComponent,
     canActivate: [isLoggedOut()],
   },
   {
-    path: 'verify-email',
+    path: new VerifyEmailRoute().path(),
     loadComponent: () => VerifyEmailComponent,
-    canActivate: [isLoggedOut(), hasEmail()],
+    canActivate: [
+      isLoggedOut(),
+      hasEmail(),
+      isComingFrom(new LoginRoute().path()),
+    ],
   },
 ];
 
-export function isLoggedIn(): CanActivateFn {
+function isLoggedIn(): CanActivateFn {
   return hasAuthState('authenticated', (token, router, service) => {
-    router.navigateByUrl('/login');
+    router.navigateByUrl(new LoginRoute().fullPath());
     return false;
   });
 }
 
-export function isLoggedOut(): CanActivateFn {
+function isLoggedOut(): CanActivateFn {
   return hasAuthState('unauthenticated', (token, router, service) => {
-    router.navigateByUrl('/');
+    router.navigateByUrl(new HomeRoute().fullPath());
     return false;
   });
 }
 
-export function hasEmail(): CanActivateFn {
+function hasEmail(): CanActivateFn {
   return hasState('email', (router) => {
-    router.navigateByUrl('/login');
+    router.navigateByUrl(new LoginRoute().fullPath());
     return false;
   });
 }
@@ -105,5 +144,12 @@ function hasState(
     }
 
     return true;
+  };
+}
+
+function isComingFrom(route: string): CanActivateFn {
+  return (_, __) => {
+    const router = inject(Router);
+    return router.url == route;
   };
 }
