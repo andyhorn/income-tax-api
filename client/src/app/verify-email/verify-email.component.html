@@ -17,7 +17,12 @@
                 </div>
             </div>
             <div class="col-6 offset-3 d-flex justify-content-between align-items-center">
-                <button class="btn btn-primary" (click)="submit()">Submit</button>
+                <button [disabled]="busy" class="btn btn-primary" (click)="submit()">
+                    <app-busy-indicator [visible]="busy"></app-busy-indicator>
+                    <ng-container *ngIf="!busy">
+                        Submit
+                    </ng-container>
+                </button>
                 <div class="d-flex align-items-center">
                     <p class="m-0">Didn't get a code?</p>
                     <button class="btn btn-link" (click)="resend()">Resend</button>

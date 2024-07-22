@@ -1,4 +1,4 @@
-import { NgForOf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -11,22 +11,31 @@ import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { bootstrapXCircle } from '@ng-icons/bootstrap-icons';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { delayWhen, finalize, timer } from 'rxjs';
 import { HomeRoute } from '../app.routes';
 import { AuthError } from '../auth/business/auth.error';
 import { AuthService } from '../auth/business/auth.service';
+import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.component';
 import { ToastService } from '../shared/toast/toast.service';
 import {
   buildVerifyEmailForm,
   VerifyEmailFormData,
   VerifyEmailFormKeys,
 } from './verify-email-form';
+import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
 
 export const PIN_LENGTH = 6;
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [ReactiveFormsModule, NgForOf, NgIconComponent],
+  imports: [
+    ReactiveFormsModule,
+    NgIf,
+    NgForOf,
+    NgIconComponent,
+    BusyIndicatorComponent,
+  ],
   providers: [provideIcons({ bootstrapXCircle })],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.scss',
@@ -40,6 +49,8 @@ export class VerifyEmailComponent implements AfterViewInit {
 
   public readonly formKeys = VerifyEmailFormKeys;
   public readonly form = buildVerifyEmailForm(PIN_LENGTH);
+
+  public busy = false;
 
   @ViewChildren('digit')
   private readonly inputs!: QueryList<ElementRef<HTMLInputElement>>;
@@ -89,11 +100,17 @@ export class VerifyEmailComponent implements AfterViewInit {
 
     if (this.form.valid) {
       const data = VerifyEmailFormData.fromFormGroup(this.form);
+      this.busy = true;
+
       this.authService
         .verifyEmail({
           email: this.email!,
           token: data.pin,
         })
+        .pipe(
+          minimumDuration(),
+          finalize(() => (this.busy = false)),
+        )
         .subscribe({
           next: () => {
             new HomeRoute().go(this.router);
@@ -113,10 +130,17 @@ export class VerifyEmailComponent implements AfterViewInit {
       return;
     }
 
+    this.busy = true;
+    const now = Date.now();
+
     this.authService
       .resendVerificationCode({
         email: this.email,
       })
+      .pipe(
+        minimumDuration(),
+        finalize(() => (this.busy = false)),
+      )
       .subscribe({
         next: () => {
           this.toastService.show({
