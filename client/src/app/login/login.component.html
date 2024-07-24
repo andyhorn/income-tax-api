@@ -38,7 +38,7 @@
                 </ng-container>
             </div>
             <div class="col-6 offset-3 d-flex justify-content-between">
-                <button class="btn btn-primary" (click)="login()">
+                <button class="btn btn-primary" [disabled]="busy" (click)="login()">
                     <app-busy-indicator [visible]="busy"></app-busy-indicator>
                     <ng-container *ngIf="!busy">Submit</ng-container>
                 </button>
