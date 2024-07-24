@@ -5,16 +5,16 @@ const REFRESH_TOKEN_KEY = 'refresh-token';
 @Injectable({
   providedIn: 'root',
 })
-export class TokenService {
-  public write(token: string): void {
+export class RefreshTokenService {
+  public save(token: string): void {
     sessionStorage.setItem(REFRESH_TOKEN_KEY, token);
   }
 
-  public read(): string | null {
+  public get(): string | null {
     return sessionStorage.getItem(REFRESH_TOKEN_KEY);
   }
 
-  public delete(): void {
+  public remove(): void {
     sessionStorage.removeItem(REFRESH_TOKEN_KEY);
   }
 }

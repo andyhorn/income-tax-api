@@ -9,13 +9,13 @@ import {
 } from '../data/auth-data.interface';
 import { AuthClient } from '../data/auth.client';
 import { AuthError } from './auth.error';
-import { TokenService } from './token.service';
+import { RefreshTokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly tokenService = inject(TokenService);
+  private readonly tokenService = inject(RefreshTokenService);
   private readonly client = inject(AuthClient);
   private readonly accessTokenSubject = new BehaviorSubject<
     string | null | undefined
@@ -28,16 +28,16 @@ export class AuthService {
     );
 
   constructor() {
-    const refresh = this.tokenService.read();
+    const refresh = this.tokenService.get();
 
     if (refresh) {
       this.client.refreshUserTokens(refresh).subscribe({
         next: (tokens) => {
-          this.tokenService.write(tokens.refresh);
+          this.tokenService.save(tokens.refresh);
           this.accessTokenSubject.next(tokens.access);
         },
         error: (err: AuthError) => {
-          this.tokenService.delete();
+          this.tokenService.remove();
           this.accessTokenSubject.next(null);
         },
       });
@@ -49,7 +49,7 @@ export class AuthService {
   public logout(): Observable<any> {
     return of(0).pipe(
       tap(() => {
-        this.tokenService.delete();
+        this.tokenService.remove();
         this.accessTokenSubject.next(null);
       }),
     );
@@ -61,7 +61,7 @@ export class AuthService {
 
   public login(params: AuthLoginParameters): Observable<AuthUserTokens> {
     return this.client.login(params).pipe(
-      tap((tokens) => this.tokenService.write(tokens.refresh)),
+      tap((tokens) => this.tokenService.save(tokens.refresh)),
       tap((tokens) => this.accessTokenSubject.next(tokens.access)),
     );
   }
@@ -74,7 +74,7 @@ export class AuthService {
 
   public verifyEmail(params: AuthVerifyEmailParameters): Observable<boolean> {
     return this.client.verifyEmail(params).pipe(
-      tap((tokens) => this.tokenService.write(tokens.refresh)),
+      tap((tokens) => this.tokenService.save(tokens.refresh)),
       tap((tokens) => this.accessTokenSubject.next(tokens.access)),
       map(() => true),
     );
