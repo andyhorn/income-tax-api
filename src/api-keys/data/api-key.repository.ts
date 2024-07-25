@@ -3,7 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApiKeyEntityConverter } from './api-key-entity.converter';
 import { ApiKeyEntity, ApiKeyUsageEntity } from './api-key.entity';
-import { ApiKey, ApiKeyCreateParams } from './api-key.interface';
+import {
+  ApiKey,
+  ApiKeyCreateParams,
+  ApiKeyFindManyParams,
+  ApiKeyFindParams,
+} from './api-key.interface';
 
 @Injectable()
 export class ApiKeyRepository {
@@ -21,9 +26,9 @@ export class ApiKeyRepository {
     return entities.map(this.converter.fromEntity.bind(this));
   }
 
-  public async find(key: string): Promise<ApiKey | null> {
+  public async findOne(params: ApiKeyFindParams): Promise<ApiKey | null> {
     const entity = await this.apiKeyRepository.findOneBy({
-      token: key,
+      ...params,
     });
 
     if (!entity) {
@@ -31,6 +36,14 @@ export class ApiKeyRepository {
     }
 
     return this.converter.fromEntity(entity);
+  }
+
+  public async findMany(params: ApiKeyFindManyParams): Promise<ApiKey[]> {
+    const entities = await this.apiKeyRepository.findBy({
+      ...params,
+    });
+
+    return entities.map(this.converter.fromEntity);
   }
 
   public async save({ userId, hash }: ApiKeyCreateParams): Promise<ApiKey> {

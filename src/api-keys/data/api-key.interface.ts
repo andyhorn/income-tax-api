@@ -11,3 +11,11 @@ export interface ApiKeyCreateParams {
   hash: string;
   nickname?: string;
 }
+
+export interface ApiKeyFindParams {
+  token?: string;
+}
+
+export interface ApiKeyFindManyParams {
+  userId?: number;
+}

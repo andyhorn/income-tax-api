@@ -29,7 +29,15 @@ export class ApiKeysService {
   }
 
   public async find(key: string): Promise<ApiKey | null> {
-    return await this.apiKeysRepository.find(key);
+    return await this.apiKeysRepository.findOne({
+      token: key,
+    });
+  }
+
+  public async findForUser(userId: number): Promise<ApiKey[]> {
+    return this.apiKeysRepository.findMany({
+      userId,
+    });
   }
 
   public async markUsed(hash: string): Promise<ApiKey | null> {
