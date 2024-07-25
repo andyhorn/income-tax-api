@@ -12,6 +12,12 @@ export class ApiKeyEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({
+    name: 'nickname',
+    nullable: true,
+  })
+  nickname: string | null;
+
   @ManyToOne(() => UserEntity)
   @JoinColumn({
     name: 'user_id',

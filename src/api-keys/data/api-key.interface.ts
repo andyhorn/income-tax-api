@@ -1,6 +1,7 @@
 export interface ApiKey {
   userId: number;
   token: string;
+  nickname: string | null;
   createdAt: Date;
   deletedAt: Date | null;
 }
@@ -8,4 +9,5 @@ export interface ApiKey {
 export interface ApiKeyCreateParams {
   userId: number;
   hash: string;
+  nickname?: string;
 }
