@@ -10,6 +10,7 @@ export class ApiKeyEntityConverter {
       deletedAt: entity.deletedAt,
       token: entity.token,
       userId: entity.userId,
+      nickname: entity.nickname,
     };
   }
 }
