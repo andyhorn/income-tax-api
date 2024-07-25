@@ -7,6 +7,7 @@ export class ApiKeyDtoConverter {
   public toDto(key: ApiKey): ApiKeyDto {
     return {
       key: key.token,
+      nickname: key.nickname,
     };
   }
 }
