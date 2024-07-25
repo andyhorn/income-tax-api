@@ -27,7 +27,7 @@ RUN npm ci --include=dev
 COPY --link . .
 
 # Build application
-RUN npm run build
+RUN npm run build:ci
 
 # Final stage for app image
 FROM base
