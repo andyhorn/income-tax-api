@@ -1,7 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, GuardResult, Router, Routes } from '@angular/router';
-import { distinctUntilChanged, map } from 'rxjs';
-import { AuthService } from './auth/business/auth.service';
+import { filter, map } from 'rxjs';
+import {
+  Authenticated,
+  AuthService,
+  Unauthenticated,
+  Unknown,
+} from './auth/business/auth.service';
 import { HomeComponent } from './home.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
@@ -98,13 +103,14 @@ function hasAuthState(
     const router = inject(Router);
     const authService = inject(AuthService);
 
-    return authService.accessToken$.pipe(
-      map((token) => {
-        if (!!token && req == 'authenticated') {
+    return authService.authState$.pipe(
+      filter((state) => !(state instanceof Unknown)),
+      map((state) => {
+        if (state instanceof Authenticated && req == 'authenticated') {
           return true;
         }
 
-        if (!token && req == 'unauthenticated') {
+        if (state instanceof Unauthenticated && req == 'unauthenticated') {
           return true;
         }
 

@@ -2,9 +2,9 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
-import { AuthService } from '../../auth/business/auth.service';
 import { map } from 'rxjs';
 import { LoginRoute } from '../../app.routes';
+import { Authenticated, AuthService } from '../../auth/business/auth.service';
 
 @Component({
   selector: 'app-top-bar',
@@ -17,8 +17,8 @@ export class AppTopBarComponent {
   router = inject(Router);
   authService = inject(AuthService);
 
-  public readonly loggedIn$ = this.authService.accessToken$.pipe(
-    map((token) => !!token),
+  public readonly loggedIn$ = this.authService.authState$.pipe(
+    map((state) => state instanceof Authenticated),
   );
 
   public logout(): void {

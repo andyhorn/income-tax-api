@@ -1,8 +1,8 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { map, switchMap, take, tap } from 'rxjs';
+import { map, switchMap, take } from 'rxjs';
 import { environment } from '../environments/environment';
-import { AuthService } from './auth/business/auth.service';
+import { TokenService } from './auth/business/token.service';
 
 export const prefixApiUrl = (): HttpInterceptorFn => {
   return (req, next) => {
@@ -16,9 +16,9 @@ export const prefixApiUrl = (): HttpInterceptorFn => {
 
 export const injectAuthToken = (): HttpInterceptorFn => {
   return (req, next) => {
-    const authService = inject(AuthService);
+    const tokenService = inject(TokenService);
 
-    return authService.accessToken$.pipe(
+    return tokenService.accessToken$.pipe(
       take(1),
       map((token) => {
         if (token) {
