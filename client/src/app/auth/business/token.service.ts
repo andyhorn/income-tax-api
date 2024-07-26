@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, shareReplay } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, shareReplay } from 'rxjs';
 import { AuthUserTokens } from '../data/auth-data.interface';
 
 const REFRESH_TOKEN_KEY = 'refresh-token';
@@ -14,7 +14,7 @@ export class TokenService {
 
   public readonly accessToken$ = this.accessTokenSubject
     .asObservable()
-    .pipe(shareReplay());
+    .pipe(distinctUntilChanged(), shareReplay());
 
   public save(tokens: AuthUserTokens): void {
     sessionStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh);
