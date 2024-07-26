@@ -1,16 +1,6 @@
+import { provideHttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatest,
-  filter,
-  finalize,
-  map,
-  Observable,
-  of,
-  shareReplay,
-  startWith,
-  tap,
-} from 'rxjs';
+import { map, Observable, of, shareReplay, startWith, tap } from 'rxjs';
 import {
   AuthLoginParameters,
   AuthRegisterParameters,
@@ -36,18 +26,14 @@ export class Unauthenticated extends AuthState {}
 
 @Injectable({
   providedIn: 'root',
+  deps: [provideHttpClient],
 })
 export class AuthService {
-  private initialized = new BehaviorSubject<boolean>(false);
   private readonly tokenService = inject(TokenService);
   private readonly client = inject(AuthClient);
 
-  public readonly authState$ = combineLatest([
-    this.initialized,
-    this.tokenService.accessToken$,
-  ]).pipe(
-    filter(([initialized]) => initialized),
-    map(([_, token]) => {
+  public readonly authState$ = this.tokenService.accessToken$.pipe(
+    map((token) => {
       if (token) {
         return new Authenticated(token);
       }
@@ -62,16 +48,12 @@ export class AuthService {
     const refresh = this.tokenService.getRefreshToken();
 
     if (refresh) {
-      this.client
-        .refreshUserTokens(refresh)
-        .pipe(finalize(() => this.initialized.next(true)))
-        .subscribe({
-          next: (tokens) => this.tokenService.save(tokens),
-          error: (err: AuthError) => this.tokenService.clear(),
-        });
+      this.client.refreshUserTokens(refresh).subscribe({
+        next: (tokens) => this.tokenService.save(tokens),
+        error: (err: AuthError) => this.tokenService.clear(),
+      });
     } else {
       this.tokenService.clear();
-      this.initialized.next(true);
     }
   }
 
