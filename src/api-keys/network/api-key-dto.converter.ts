@@ -6,7 +6,7 @@ import { ApiKeyDto } from './api-key.dto';
 export class ApiKeyDtoConverter {
   public toDto(key: ApiKey): ApiKeyDto {
     return {
-      key: key.token,
+      createdAt: key.createdAt,
       nickname: key.nickname,
     };
   }
