@@ -16,7 +16,7 @@ export class ApiKeyController {
   @Post()
   public async create(@AuthenticatedUserId() id: number): Promise<ApiKeyDto> {
     const key = await this.apiKeysService.createForUser(id);
-    return { key, nickname: null };
+    return { nickname: null, createdAt: key.createdAt };
   }
 
   @UseGuards(AuthGuard)
