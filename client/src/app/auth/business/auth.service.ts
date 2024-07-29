@@ -1,6 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { map, Observable, of, shareReplay, startWith, tap } from 'rxjs';
+import { computed, inject, Injectable } from '@angular/core';
+import { map, Observable, of, tap } from 'rxjs';
 import {
   AuthLoginParameters,
   AuthRegisterParameters,
@@ -13,8 +13,6 @@ import { AuthError } from './auth.error';
 import { TokenService } from './token.service';
 
 export abstract class AuthState {}
-
-export class Unknown extends AuthState {}
 
 export class Authenticated extends AuthState {
   constructor(public readonly accessToken: string) {
@@ -32,20 +30,18 @@ export class AuthService {
   private readonly tokenService = inject(TokenService);
   private readonly client = inject(AuthClient);
 
-  public readonly authState$ = this.tokenService.accessToken$.pipe(
-    map((token) => {
-      if (token) {
-        return new Authenticated(token);
-      }
+  public authState = computed(() => {
+    const accessToken = this.tokenService.accessToken();
 
-      return new Unauthenticated();
-    }),
-    startWith(new Unknown()),
-    shareReplay(),
-  );
+    if (accessToken) {
+      return new Authenticated(accessToken);
+    }
+
+    return new Unauthenticated();
+  });
 
   constructor() {
-    const refresh = this.tokenService.getRefreshToken();
+    const refresh = this.tokenService.refreshToken;
 
     if (refresh) {
       this.client.refreshUserTokens(refresh).subscribe({

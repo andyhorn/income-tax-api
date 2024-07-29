@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, shareReplay } from 'rxjs';
+import { Injectable, Signal, signal } from '@angular/core';
 import { AuthUserTokens } from '../data/auth-data.interface';
 
 const REFRESH_TOKEN_KEY = 'refresh-token';
@@ -8,25 +7,23 @@ const REFRESH_TOKEN_KEY = 'refresh-token';
   providedIn: 'root',
 })
 export class TokenService {
-  private readonly accessTokenSubject = new BehaviorSubject<string | null>(
-    null,
-  );
+  private readonly accessTokenSignal = signal<string | null>(null);
 
-  public readonly accessToken$ = this.accessTokenSubject
-    .asObservable()
-    .pipe(distinctUntilChanged(), shareReplay());
+  public get accessToken(): Signal<string | null> {
+    return this.accessTokenSignal.asReadonly();
+  }
+
+  public get refreshToken(): string | null {
+    return sessionStorage[REFRESH_TOKEN_KEY];
+  }
 
   public save(tokens: AuthUserTokens): void {
     sessionStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh);
-    this.accessTokenSubject.next(tokens.access);
+    this.accessTokenSignal.set(tokens.access);
   }
 
   public clear(): void {
     sessionStorage.removeItem(REFRESH_TOKEN_KEY);
-    this.accessTokenSubject.next(null);
-  }
-
-  public getRefreshToken(): string | null {
-    return sessionStorage[REFRESH_TOKEN_KEY];
+    this.accessTokenSignal.set(null);
   }
 }

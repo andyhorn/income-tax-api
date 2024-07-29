@@ -1,6 +1,5 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { map, switchMap, take } from 'rxjs';
 import { environment } from '../environments/environment';
 import { TokenService } from './auth/business/token.service';
 
@@ -17,19 +16,14 @@ export const prefixApiUrl = (): HttpInterceptorFn => {
 export const injectAuthToken = (): HttpInterceptorFn => {
   return (req, next) => {
     const tokenService = inject(TokenService);
+    const accessToken = tokenService.accessToken;
 
-    return tokenService.accessToken$.pipe(
-      take(1),
-      map((token) => {
-        if (token) {
-          req = req.clone({
-            headers: req.headers.append('Authorization', `Bearer ${token}`),
-          });
-        }
+    if (accessToken) {
+      req = req.clone({
+        headers: req.headers.set('Authorization', `Bearer ${accessToken}`),
+      });
+    }
 
-        return req;
-      }),
-      switchMap((req) => next(req)),
-    );
+    return next(req);
   };
 };
