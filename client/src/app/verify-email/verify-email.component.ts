@@ -9,8 +9,6 @@ import {
 } from '@angular/core';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { bootstrapXCircle } from '@ng-icons/bootstrap-icons';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { finalize } from 'rxjs';
 import { HomeRoute } from '../app.routes';
 import { AuthError } from '../auth/business/auth.error';
@@ -29,14 +27,7 @@ export const PIN_LENGTH = 6;
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    NgIf,
-    NgForOf,
-    NgIconComponent,
-    BusyIndicatorComponent,
-  ],
-  providers: [provideIcons({ bootstrapXCircle })],
+  imports: [ReactiveFormsModule, NgIf, NgForOf, BusyIndicatorComponent],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.scss',
 })
