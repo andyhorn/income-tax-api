@@ -1,13 +1,13 @@
 <ul ngbNav class="nav align-items-center d-flex bg-light p-3">
-    <a class="pointer navbar-brand" (click)="router.navigateByUrl('/')">Income Tax API</a>
+    <a class="pointer navbar-brand" (click)="toHome()">Income Tax API</a>
     <span class="flex-grow-1"></span>
-    <li ngbNavItem *ngIf="!loggedIn">
-        <button ngbNavLink (click)="router.navigateByUrl('/login')">Login</button>
+    <li ngbNavItem *ngIf="!loggedIn()">
+        <button ngbNavLink (click)="toLogin()">Login</button>
     </li>
-    <li ngbNavItem *ngIf="!loggedIn">
-        <button ngbNavLink (click)="router.navigateByUrl('/register')">Register</button>
+    <li ngbNavItem *ngIf="!loggedIn()">
+        <button ngbNavLink (click)="toRegister()">Register</button>
     </li>
-    <li ngbNavItem *ngIf="loggedIn">
+    <li ngbNavItem *ngIf="loggedIn()">
         <button ngbNavLink (click)="logout()">Logout</button>
     </li>
 </ul>

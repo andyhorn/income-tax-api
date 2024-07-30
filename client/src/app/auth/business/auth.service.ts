@@ -1,6 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { computed, inject, Injectable } from '@angular/core';
-import { map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import {
   AuthLoginParameters,
   AuthRegisterParameters,
@@ -9,7 +9,6 @@ import {
   AuthVerifyEmailParameters,
 } from '../data/auth-data.interface';
 import { AuthClient } from '../data/auth.client';
-import { AuthError } from './auth.error';
 import { TokenService } from './token.service';
 
 export abstract class AuthState {}
@@ -30,7 +29,7 @@ export class AuthService {
   private readonly tokenService = inject(TokenService);
   private readonly client = inject(AuthClient);
 
-  public authState = computed(() => {
+  public readonly authState = computed(() => {
     const accessToken = this.tokenService.accessToken();
 
     if (accessToken) {
@@ -39,19 +38,6 @@ export class AuthService {
 
     return new Unauthenticated();
   });
-
-  constructor() {
-    const refresh = this.tokenService.refreshToken;
-
-    if (refresh) {
-      this.client.refreshUserTokens(refresh).subscribe({
-        next: (tokens) => this.tokenService.save(tokens),
-        error: (err: AuthError) => this.tokenService.clear(),
-      });
-    } else {
-      this.tokenService.clear();
-    }
-  }
 
   public logout(): Observable<any> {
     return of(0).pipe(tap(() => this.tokenService.clear()));
@@ -77,6 +63,23 @@ export class AuthService {
     return this.client.verifyEmail(params).pipe(
       tap((tokens) => this.tokenService.save(tokens)),
       map(() => true),
+    );
+  }
+
+  public attemptRefresh(): Observable<boolean> {
+    const refreshToken = this.tokenService.refreshToken;
+
+    if (!refreshToken) {
+      return of(false);
+    }
+
+    return this.client.refreshUserTokens(refreshToken).pipe(
+      tap((tokens) => this.tokenService.save(tokens)),
+      map(() => true),
+      catchError((error) => {
+        this.tokenService.clear();
+        return throwError(() => error);
+      }),
     );
   }
 }

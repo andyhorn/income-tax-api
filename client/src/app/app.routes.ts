@@ -1,5 +1,11 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, GuardResult, Router, Routes } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivateFn,
+  GuardResult,
+  Router,
+  Routes,
+} from '@angular/router';
 import {
   Authenticated,
   AuthService,
@@ -19,7 +25,31 @@ export class HomeRoute extends SimpleRoute {
   }
 }
 
-export class LoginRoute extends SimpleRoute {
+export class LoginRouteData extends SimpleRouteData {
+  constructor(public readonly redirect?: string) {
+    super();
+  }
+
+  public static fromRoute(route: ActivatedRouteSnapshot): LoginRouteData {
+    const query = route.queryParams;
+
+    return new LoginRouteData(query['redirect']);
+  }
+
+  public static empty = new LoginRouteData();
+
+  public override get query(): { [key: string]: string } {
+    if (this.redirect) {
+      return {
+        url: this.redirect,
+      };
+    }
+
+    return {};
+  }
+}
+
+export class LoginRoute extends SimpleDataRoute<LoginRouteData> {
   constructor() {
     super('login');
   }
@@ -36,7 +66,9 @@ export class VerifyEmailRouteData extends SimpleRouteData {
     super();
   }
 
-  public override state = { email: this.email };
+  public override get state() {
+    return { email: this.email };
+  }
 }
 
 export class VerifyEmailRoute extends SimpleDataRoute<VerifyEmailRouteData> {
@@ -68,8 +100,11 @@ export const routes: Routes = [
       isLoggedOut(),
       hasEmail(),
       isComingFrom(
-        [new LoginRoute().fullPath(), new RegisterRoute().fullPath()],
-        (router) => new LoginRoute().go(router),
+        [
+          new LoginRoute().fullPath(LoginRouteData.empty),
+          new RegisterRoute().fullPath(),
+        ],
+        (router) => new LoginRoute().go(router, LoginRouteData.empty),
       ),
     ],
   },
@@ -77,7 +112,7 @@ export const routes: Routes = [
 
 function isLoggedIn(): CanActivateFn {
   return hasAuthState('authenticated', (router) => {
-    return router.parseUrl(new LoginRoute().fullPath());
+    return router.parseUrl(new LoginRoute().fullPath(LoginRouteData.empty));
   });
 }
 
@@ -89,7 +124,7 @@ function isLoggedOut(): CanActivateFn {
 
 function hasEmail(): CanActivateFn {
   return hasState('email', (router) => {
-    return router.parseUrl(new LoginRoute().fullPath());
+    return router.parseUrl(new LoginRoute().fullPath(LoginRouteData.empty));
   });
 }
 

@@ -1,9 +1,21 @@
 import { Router } from '@angular/router';
 
+type ParameterMap = { [key: string]: string };
+type QueryMap = { [key: string]: string | undefined };
+type StateMap = { [key: string]: any };
+
 export abstract class SimpleRouteData {
-  public parameters: { [key: string]: string } = {};
-  public query: { [key: string]: string } = {};
-  public state?: { [key: string]: any };
+  public get parameters(): ParameterMap {
+    return {};
+  }
+
+  public get query(): QueryMap {
+    return {};
+  }
+
+  public get state(): StateMap | undefined {
+    return undefined;
+  }
 }
 
 export abstract class BaseRoute {
@@ -64,7 +76,7 @@ export class SimpleDataRoute<T extends SimpleRouteData> extends BaseRoute {
     path = this.injectParameters(path, data);
     path = this.appendQuery(path, data);
 
-    return path;
+    return encodeURI(path);
   }
 
   private injectParameters(path: string, data: T): string {
@@ -87,6 +99,7 @@ export class SimpleDataRoute<T extends SimpleRouteData> extends BaseRoute {
 
   private buildQuery(data: T): string | null {
     return Object.entries(data.query)
+      .filter(([_, value]) => value !== undefined)
       .map(([key, value]) => `${key}=${value}`)
       .join('&');
   }
