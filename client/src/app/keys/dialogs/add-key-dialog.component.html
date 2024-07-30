@@ -1,0 +1,16 @@
+<div class="modal-header d-flex justify-content-between align-items-center">
+    <h5 class="m-0">Add a key</h5>
+    <button class="btn" (click)="dismiss()">
+        <i class="bi bi-x"></i>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="form">
+        <label for="nickname" class="form-label">Nickname (optional)</label>
+        <input [formControlName]="formKeys.NICKNAME" id="nickname" class="form-control">
+    </form>
+</div>
+<div class="modal-footer d-flex justify-content-end">
+    <button class="btn btn-secondary" (click)="dismiss()">Close</button>
+    <button class="btn btn-primary" (click)="save()">Save</button>
+</div>
