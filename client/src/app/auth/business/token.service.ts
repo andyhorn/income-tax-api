@@ -14,16 +14,16 @@ export class TokenService {
   }
 
   public get refreshToken(): string | null {
-    return sessionStorage[REFRESH_TOKEN_KEY];
+    return localStorage[REFRESH_TOKEN_KEY];
   }
 
   public save(tokens: AuthUserTokens): void {
-    sessionStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh);
+    localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh);
     this.accessTokenSignal.set(tokens.access);
   }
 
   public clear(): void {
-    sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
     this.accessTokenSignal.set(null);
   }
 }
