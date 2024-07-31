@@ -19,7 +19,7 @@ export class ApiKeyController {
     @Body() { nickname }: { nickname?: string },
   ): Promise<ApiKeyDto> {
     const key = await this.apiKeysService.createForUser(id, nickname);
-    return this.converter.toDto(key);
+    return this.converter.toCreationResultDto(key);
   }
 
   @UseGuards(AuthGuard)
