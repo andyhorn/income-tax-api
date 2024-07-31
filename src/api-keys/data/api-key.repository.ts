@@ -46,10 +46,15 @@ export class ApiKeyRepository {
     return entities.map(this.converter.fromEntity);
   }
 
-  public async save({ userId, hash }: ApiKeyCreateParams): Promise<ApiKey> {
+  public async save({
+    userId,
+    hash,
+    nickname,
+  }: ApiKeyCreateParams): Promise<ApiKey> {
     const result = await this.apiKeyRepository.insert({
       token: hash,
       userId,
+      nickname,
     });
 
     if (!result.identifiers.length) {

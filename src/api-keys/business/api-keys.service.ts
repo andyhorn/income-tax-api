@@ -13,7 +13,10 @@ export class ApiKeysService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  public async createForUser(userId: number): Promise<ApiKey> {
+  public async createForUser(
+    userId: number,
+    nickname?: string,
+  ): Promise<ApiKey> {
     const user = await this.usersRepository.find(userId);
 
     if (!user) {
@@ -23,7 +26,7 @@ export class ApiKeysService {
     const key = this.generateKey(KEY_LENGTH);
     const hash = this.hash(key);
 
-    return await this.apiKeysRepository.save({ userId, hash });
+    return await this.apiKeysRepository.save({ userId, hash, nickname });
   }
 
   public async find(key: string): Promise<ApiKey | null> {

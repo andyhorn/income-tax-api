@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/network/auth.guard';
 import { AuthenticatedUserId } from 'src/users/network/authenticated-user-id.decorator';
 import { ApiKeysService } from '../business/api-keys.service';
@@ -14,9 +14,12 @@ export class ApiKeyController {
 
   @UseGuards(AuthGuard)
   @Post()
-  public async create(@AuthenticatedUserId() id: number): Promise<ApiKeyDto> {
-    const key = await this.apiKeysService.createForUser(id);
-    return { nickname: null, createdAt: key.createdAt };
+  public async create(
+    @AuthenticatedUserId() id: number,
+    @Body() { nickname }: { nickname?: string },
+  ): Promise<ApiKeyDto> {
+    const key = await this.apiKeysService.createForUser(id, nickname);
+    return this.converter.toDto(key);
   }
 
   @UseGuards(AuthGuard)
