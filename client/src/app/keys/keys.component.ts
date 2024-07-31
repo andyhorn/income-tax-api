@@ -1,11 +1,10 @@
 import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { KeysClient } from './keys.client';
-import { AddKeyDialogComponent } from './dialogs/add-key-dialog.component';
+import { Component, inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { KeysService } from './keys.service';
-import { BehaviorSubject } from 'rxjs';
+import { KeysClient } from './keys.client';
 import { ApiKey } from './keys.interface';
+import { KeysService } from './keys.service';
+import { AddKeyDialogComponent } from './dialogs/add-key-dialog/add-key-dialog.component';
 
 @Component({
   selector: 'app-keys',

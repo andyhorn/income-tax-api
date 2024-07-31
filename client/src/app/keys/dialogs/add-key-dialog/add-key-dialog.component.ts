@@ -3,10 +3,10 @@ import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject } from 'rxjs';
-import { ToastService } from '../../shared/toast/toast.service';
-import { KeysClient } from '../keys.client';
-import { KeysService } from '../keys.service';
 import { AddKeyFormData, AddKeyFormKeys, buildKeyForm } from './add-key-form';
+import { ToastService } from '../../../shared/toast/toast.service';
+import { KeysClient } from '../../keys.client';
+import { KeysService } from '../../keys.service';
 
 @Component({
   selector: 'add-key-dialog',
