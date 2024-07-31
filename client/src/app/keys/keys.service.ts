@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { CreateKeyParams, KeysClient } from './keys.client';
-import { ApiKey } from './keys.interface';
+import { ApiKey, ApiKeyCreationResult } from './keys.interface';
 
 @Injectable()
 export class KeysService {
@@ -16,11 +16,13 @@ export class KeysService {
       .subscribe((keys) => this.keysSubject.next(keys));
   }
 
-  public create(params: CreateKeyParams): Observable<boolean> {
-    return this.client.create(params).pipe(
-      switchMap(() => this.client.forCurrentUser()),
-      tap((keys) => this.keysSubject.next(keys)),
-      map(() => true),
-    );
+  public create(params: CreateKeyParams): Observable<ApiKeyCreationResult> {
+    return this.client.create(params);
+  }
+
+  public refresh(): void {
+    this.client
+      .forCurrentUser()
+      .subscribe((keys) => this.keysSubject.next(keys));
   }
 }

@@ -8,8 +8,11 @@
     <hr>
     <ng-container *ngIf="keys$ | async as keys">
         <ul *ngIf="keys.length">
-            <li *ngFor="let key of keys">{{ key.createdAt | date }}<ng-container *ngIf="key.nickname">{{ (key.nickname)
-                    }}</ng-container></li>
+            <li *ngFor="let key of keys">
+                <span *ngIf="key.nickname">{{ key.nickname }}</span>
+                <span *ngIf="!key.nickname">Unnamed</span>
+                (Created {{ key.createdAt | date }})
+            </li>
         </ul>
         <p *ngIf="!keys.length">No keys yet</p>
     </ng-container>
