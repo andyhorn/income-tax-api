@@ -20,3 +20,8 @@ export interface ApiKeyFindParams {
 export interface ApiKeyFindManyParams {
   userId?: number;
 }
+
+export interface ApiKeyDeleteParams {
+  keyId: number;
+  userId: number;
+}

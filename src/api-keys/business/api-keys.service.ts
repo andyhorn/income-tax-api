@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { createHash, randomBytes } from 'crypto';
 import { UsersRepository } from 'src/users/data/users.repository';
-import { ApiKey } from '../data/api-key.interface';
+import { ApiKey, ApiKeyDeleteParams } from '../data/api-key.interface';
 import { ApiKeyRepository } from '../data/api-key.repository';
 
 const KEY_LENGTH = 16;
@@ -43,6 +43,10 @@ export class ApiKeysService {
 
   public async markUsed(hash: string): Promise<ApiKey | null> {
     return await this.apiKeysRepository.markUsed(hash);
+  }
+
+  public async delete(params: ApiKeyDeleteParams): Promise<void> {
+    return await this.apiKeysRepository.delete(params);
   }
 
   public hash(token: string): string {

@@ -1,9 +1,20 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/auth/network/auth.guard';
 import { AuthenticatedUserId } from 'src/users/network/authenticated-user-id.decorator';
 import { ApiKeysService } from '../business/api-keys.service';
-import { ApiKeyDto } from './api-key.dto';
 import { ApiKeyDtoConverter } from './api-key-dto.converter';
+import { ApiKeyDto } from './api-key.dto';
 
 @Controller('api-keys')
 export class ApiKeyController {
@@ -30,5 +41,18 @@ export class ApiKeyController {
     const keys = await this.apiKeysService.findForUser(id);
 
     return keys.map(this.converter.toDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async delete(
+    @Param('id', ParseIntPipe) id: number,
+    @AuthenticatedUserId() userId: number,
+  ): Promise<void> {
+    return await this.apiKeysService.delete({
+      keyId: id,
+      userId,
+    });
   }
 }

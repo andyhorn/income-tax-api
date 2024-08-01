@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { ApiKeyEntityConverter } from './api-key-entity.converter';
 import { ApiKeyEntity, ApiKeyUsageEntity } from './api-key.entity';
 import {
   ApiKey,
   ApiKeyCreateParams,
+  ApiKeyDeleteParams,
   ApiKeyFindManyParams,
   ApiKeyFindParams,
 } from './api-key.interface';
@@ -82,5 +83,27 @@ export class ApiKeyRepository {
     });
 
     return this.converter.fromEntity(entity);
+  }
+
+  public async delete({ keyId, userId }: ApiKeyDeleteParams): Promise<void> {
+    const entity = await this.apiKeyRepository.findOneBy({
+      userId,
+      id: keyId,
+    });
+
+    if (!entity) {
+      throw new NotFoundException();
+    }
+
+    entity.deletedAt = new Date();
+
+    await this.apiKeyRepository.update(
+      {
+        id: keyId,
+      },
+      {
+        deletedAt: new Date(),
+      },
+    );
   }
 }
