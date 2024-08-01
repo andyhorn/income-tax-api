@@ -1,9 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, finalize, Observable } from 'rxjs';
 import { CreateKeyParams, KeysClient } from './keys.client';
 import { ApiKey, ApiKeyCreationResult } from './keys.interface';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class KeysService {
   private readonly client = inject(KeysClient);
   private readonly keysSubject = new BehaviorSubject<ApiKey[]>([]);
@@ -17,7 +19,7 @@ export class KeysService {
   }
 
   public create(params: CreateKeyParams): Observable<ApiKeyCreationResult> {
-    return this.client.create(params);
+    return this.client.create(params).pipe(finalize(() => this.refresh()));
   }
 
   public refresh(): void {
