@@ -28,9 +28,8 @@ export class ApiKeyController {
   public async create(
     @AuthenticatedUserId() id: number,
     @Body() { nickname }: { nickname?: string },
-  ): Promise<ApiKeyDto> {
-    const key = await this.apiKeysService.createForUser(id, nickname);
-    return this.converter.toCreationResultDto(key);
+  ): Promise<string> {
+    return await this.apiKeysService.createForUser(id, nickname);
   }
 
   @UseGuards(AuthGuard)
@@ -39,7 +38,6 @@ export class ApiKeyController {
     @AuthenticatedUserId() id: number,
   ): Promise<ApiKeyDto[]> {
     const keys = await this.apiKeysService.findForUser(id);
-
     return keys.map(this.converter.toDto);
   }
 
