@@ -1,4 +1,5 @@
 export interface ApiKey {
+  id: number;
   userId: number;
   token: string;
   nickname: string | null;

@@ -6,6 +6,7 @@ import { ApiKey } from './api-key.interface';
 export class ApiKeyEntityConverter {
   public fromEntity(entity: ApiKeyEntity): ApiKey {
     return {
+      id: entity.id,
       createdAt: entity.createdAt,
       deletedAt: entity.deletedAt,
       token: entity.token,
