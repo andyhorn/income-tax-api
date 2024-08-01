@@ -1,0 +1,1 @@
+alter table api_keys add unique (token);
