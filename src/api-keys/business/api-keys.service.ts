@@ -16,17 +16,32 @@ export class ApiKeysService {
   public async createForUser(
     userId: number,
     nickname?: string,
-  ): Promise<ApiKey> {
+  ): Promise<string> {
     const user = await this.usersRepository.find(userId);
 
     if (!user) {
       throw new NotFoundException(`User ${userId} not found`);
     }
 
-    const key = this.generateKey(KEY_LENGTH);
-    const hash = this.hash(key);
+    const { hash, key } = await this.generateUniqueKey();
 
-    return await this.apiKeysRepository.save({ userId, hash, nickname });
+    await this.apiKeysRepository.save({ userId, hash, nickname });
+
+    return key;
+  }
+
+  private async generateUniqueKey(): Promise<{ hash: string; key: string }> {
+    let exists = false,
+      key: string,
+      hash: string;
+
+    do {
+      key = this.generateKey(KEY_LENGTH);
+      hash = this.hash(key);
+      exists = await this.apiKeysRepository.exists(hash);
+    } while (exists);
+
+    return { key, hash };
   }
 
   public async find(key: string): Promise<ApiKey | null> {

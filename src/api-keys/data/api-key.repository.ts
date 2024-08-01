@@ -108,4 +108,14 @@ export class ApiKeyRepository {
       },
     );
   }
+
+  public async exists(token: string): Promise<boolean> {
+    const entity = await this.apiKeyRepository.findOne({
+      where: {
+        token,
+      },
+    });
+
+    return entity != null;
+  }
 }
