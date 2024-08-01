@@ -7,13 +7,28 @@
     </div>
     <hr>
     <ng-container *ngIf="keys$ | async as keys">
-        <ul *ngIf="keys.length">
-            <li *ngFor="let key of keys">
-                <span *ngIf="key.nickname">{{ key.nickname }}</span>
-                <span *ngIf="!key.nickname">Unnamed</span>
-                (Created {{ key.createdAt | date }})
-            </li>
-        </ul>
+        <table class="table table-striped align-middle" *ngIf="keys.length">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nickname</th>
+                    <th scope="col">Created Date</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let key of keys; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ key.nickname }}</td>
+                    <td>{{ key.createdAt | date }}</td>
+                    <td class="text-end">
+                        <button class="btn btn-danger" (click)="onDelete(key)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <p *ngIf="!keys.length">No keys yet</p>
     </ng-container>
 </div>
