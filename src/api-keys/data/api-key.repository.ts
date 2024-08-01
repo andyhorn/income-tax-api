@@ -30,6 +30,7 @@ export class ApiKeyRepository {
   public async findOne(params: ApiKeyFindParams): Promise<ApiKey | null> {
     const entity = await this.apiKeyRepository.findOneBy({
       ...params,
+      deletedAt: IsNull(),
     });
 
     if (!entity) {
@@ -42,6 +43,7 @@ export class ApiKeyRepository {
   public async findMany(params: ApiKeyFindManyParams): Promise<ApiKey[]> {
     const entities = await this.apiKeyRepository.findBy({
       ...params,
+      deletedAt: IsNull(),
     });
 
     return entities.map(this.converter.fromEntity);
