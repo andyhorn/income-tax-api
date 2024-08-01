@@ -46,7 +46,7 @@ export class ApiKeysService {
 
   public async find(key: string): Promise<ApiKey | null> {
     return await this.apiKeysRepository.findOne({
-      token: key,
+      hash: key,
     });
   }
 

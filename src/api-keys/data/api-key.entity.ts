@@ -30,7 +30,7 @@ export class ApiKeyEntity {
   userId: number;
 
   @Column()
-  token: string;
+  hash: string;
 
   @Column({
     name: 'created_at',

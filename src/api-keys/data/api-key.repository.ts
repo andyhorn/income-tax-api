@@ -55,7 +55,7 @@ export class ApiKeyRepository {
     nickname,
   }: ApiKeyCreateParams): Promise<ApiKey> {
     const result = await this.apiKeyRepository.insert({
-      token: hash,
+      hash: hash,
       userId,
       nickname,
     });
@@ -73,7 +73,7 @@ export class ApiKeyRepository {
 
   public async markUsed(token: string): Promise<ApiKey | null> {
     const entity = await this.apiKeyRepository.findOneBy({
-      token,
+      hash: token,
     });
 
     if (!entity) {
@@ -112,7 +112,7 @@ export class ApiKeyRepository {
   public async exists(token: string): Promise<boolean> {
     const entity = await this.apiKeyRepository.findOne({
       where: {
-        token,
+        hash: token,
       },
     });
 

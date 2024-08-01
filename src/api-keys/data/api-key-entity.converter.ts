@@ -9,7 +9,7 @@ export class ApiKeyEntityConverter {
       id: entity.id,
       createdAt: entity.createdAt,
       deletedAt: entity.deletedAt,
-      token: entity.token,
+      hash: entity.hash,
       userId: entity.userId,
       nickname: entity.nickname,
     };
