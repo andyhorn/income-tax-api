@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiKey, ApiKeyCreationResult } from './keys.interface';
+import { ApiKey } from './keys.interface';
 
 export interface CreateKeyParams {
   nickname?: string;
@@ -17,8 +17,8 @@ export class KeysClient {
     return this.http.get<ApiKey[]>('api-keys');
   }
 
-  public create(params: CreateKeyParams): Observable<ApiKeyCreationResult> {
-    return this.http.post<ApiKeyCreationResult>('api-keys', params);
+  public create(params: CreateKeyParams): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>('api-keys', params);
   }
 
   public delete(id: number): Observable<any> {

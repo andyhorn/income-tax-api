@@ -40,8 +40,8 @@ export class AddKeyDialogComponent {
     if (this.form.valid) {
       const data = AddKeyFormData.fromForm(this.form);
 
-      this.service.create({ ...data }).subscribe((result) => {
-        this.tokenSubject.next(result.key);
+      this.service.create({ ...data }).subscribe(({ token }) => {
+        this.tokenSubject.next(token);
       });
     }
   }

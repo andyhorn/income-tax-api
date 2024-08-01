@@ -28,8 +28,9 @@ export class ApiKeyController {
   public async create(
     @AuthenticatedUserId() id: number,
     @Body() { nickname }: { nickname?: string },
-  ): Promise<string> {
-    return await this.apiKeysService.createForUser(id, nickname);
+  ): Promise<{ token: string }> {
+    const token = await this.apiKeysService.createForUser(id, nickname);
+    return { token };
   }
 
   @UseGuards(AuthGuard)

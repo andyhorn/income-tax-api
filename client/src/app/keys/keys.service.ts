@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable } from 'rxjs';
 import { CreateKeyParams, KeysClient } from './keys.client';
-import { ApiKey, ApiKeyCreationResult } from './keys.interface';
+import { ApiKey } from './keys.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class KeysService {
       .subscribe((keys) => this.keysSubject.next(keys));
   }
 
-  public create(params: CreateKeyParams): Observable<ApiKeyCreationResult> {
+  public create(params: CreateKeyParams): Observable<{ token: string }> {
     return this.client.create(params).pipe(finalize(() => this.refresh()));
   }
 
