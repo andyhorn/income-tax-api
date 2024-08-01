@@ -20,4 +20,8 @@ export class KeysClient {
   public create(params: CreateKeyParams): Observable<ApiKeyCreationResult> {
     return this.http.post<ApiKeyCreationResult>('api-keys', params);
   }
+
+  public delete(id: number): Observable<any> {
+    return this.http.delete(`api-keys/${id}`);
+  }
 }

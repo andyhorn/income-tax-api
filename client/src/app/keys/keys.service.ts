@@ -25,4 +25,8 @@ export class KeysService {
       .forCurrentUser()
       .subscribe((keys) => this.keysSubject.next(keys));
   }
+
+  public delete(id: number): Observable<any> {
+    return this.client.delete(id).pipe(finalize(() => this.refresh()));
+  }
 }
