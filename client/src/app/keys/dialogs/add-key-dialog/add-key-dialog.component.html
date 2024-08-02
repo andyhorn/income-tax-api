@@ -15,7 +15,8 @@
             <h5>Your new key:</h5>
             <div class="d-flex bg-light p-2 rounded justify-content-between align-items-center">
                 <p #token class="m-0"><code>{{ token }}</code></p>
-                <button class="btn" ngbTooltip="Copy" (click)="copy()"><i class="bi bi-clipboard"></i></button>
+                <button class="btn" ngbTooltip="Copy" (click)="copy()" ngbPopover="Copied!" triggers="manual"
+                    #copied="ngbPopover"><i class="bi bi-clipboard"></i></button>
             </div>
             <p>Save this key somewhere safe! You will not be able to see it again.</p>
         </div>
