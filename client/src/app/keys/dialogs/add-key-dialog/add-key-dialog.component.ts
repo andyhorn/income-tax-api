@@ -7,14 +7,21 @@ import {
   NgbPopover,
   NgbPopoverModule,
 } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, finalize } from 'rxjs';
+import { BusyIndicatorComponent } from '../../../shared/busy-indicator/busy-indicator.component';
 import { KeysService } from '../../keys.service';
 import { AddKeyFormData, AddKeyFormKeys, buildKeyForm } from './add-key-form';
 
 @Component({
   selector: 'add-key-dialog',
   templateUrl: './add-key-dialog.component.html',
-  imports: [ReactiveFormsModule, AsyncPipe, NgIf, NgbPopoverModule],
+  imports: [
+    ReactiveFormsModule,
+    AsyncPipe,
+    NgIf,
+    NgbPopoverModule,
+    BusyIndicatorComponent,
+  ],
   standalone: true,
 })
 export class AddKeyDialogComponent {
@@ -25,6 +32,8 @@ export class AddKeyDialogComponent {
   public readonly form = buildKeyForm();
   public readonly formKeys = AddKeyFormKeys;
   public readonly token$ = this.tokenSubject.asObservable();
+
+  public busy = false;
 
   @ViewChild(NgbPopover)
   private readonly copiedPopover!: NgbPopover;
@@ -43,9 +52,13 @@ export class AddKeyDialogComponent {
     if (this.form.valid) {
       const data = AddKeyFormData.fromForm(this.form);
 
-      this.service.create({ ...data }).subscribe(({ token }) => {
-        this.tokenSubject.next(token);
-      });
+      this.busy = true;
+      this.service
+        .create({ ...data })
+        .pipe(finalize(() => (this.busy = false)))
+        .subscribe(({ token }) => {
+          this.tokenSubject.next(token);
+        });
     }
   }
 

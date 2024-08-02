@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable } from 'rxjs';
 import { CreateKeyParams, KeysClient } from './keys.client';
 import { ApiKey } from './keys.interface';
+import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,10 @@ export class KeysService {
   }
 
   public create(params: CreateKeyParams): Observable<{ token: string }> {
-    return this.client.create(params).pipe(finalize(() => this.refresh()));
+    return this.client.create(params).pipe(
+      minimumDuration(),
+      finalize(() => this.refresh()),
+    );
   }
 
   public refresh(): void {
