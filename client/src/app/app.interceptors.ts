@@ -9,7 +9,7 @@ export const prefixApiUrl = (): HttpInterceptorFn => {
   return (req, next) => {
     return next(
       req.clone({
-        url: `${environment.apiUrl}/${req.url}`,
+        url: `${environment.apiUrl}${req.url}`,
       }),
     );
   };

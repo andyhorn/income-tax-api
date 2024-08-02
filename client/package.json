@@ -4,7 +4,7 @@
   "scripts": {
     "start": "ng serve",
     "build": "ng build",
-    "build:ci": "./node_modules/@angular/cli/bin/ng.js build",
+    "build:ci": "./node_modules/@angular/cli/bin/ng.js build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
