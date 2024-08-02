@@ -34,6 +34,7 @@ import { StateTaxModule } from './state-tax/state-tax.module';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'client'),
+      exclude: ['/api/(.*)'],
     }),
   ],
   controllers: [],
