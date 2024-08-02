@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { ApiKeyNetworkModule } from './api-keys/network/api-key-network.module';
 import { AuthModule } from './auth/auth.module';
 import { FederalTaxModule } from './federal-tax/federal-tax.module';
@@ -29,6 +31,9 @@ import { StateTaxModule } from './state-tax/state-tax.module';
           autoLoadEntities: true,
         };
       },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, 'client'),
     }),
   ],
   controllers: [],

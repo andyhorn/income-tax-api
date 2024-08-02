@@ -37,7 +37,7 @@ FROM base
 # Copy built application
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/client/dist ./dist/client
+COPY --from=build /app/client/dist/client/browser ./dist/client
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
