@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Observable } from 'rxjs';
+import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
 import { CreateKeyParams, KeysClient } from './keys.client';
 import { ApiKey } from './keys.interface';
-import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +33,9 @@ export class KeysService {
   }
 
   public delete(id: number): Observable<any> {
-    return this.client.delete(id).pipe(finalize(() => this.refresh()));
+    return this.client.delete(id).pipe(
+      minimumDuration(),
+      finalize(() => this.refresh()),
+    );
   }
 }

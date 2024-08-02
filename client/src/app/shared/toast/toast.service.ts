@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-export type ToastType = 'info' | 'success' | 'danger';
+export type ToastType = 'info' | 'success' | 'danger' | 'secondary' | 'primary';
 
 export type Toast = {
   message: string;

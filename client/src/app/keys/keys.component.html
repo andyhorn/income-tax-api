@@ -22,8 +22,9 @@
                     <td>{{ key.nickname }}</td>
                     <td>{{ key.createdAt | date }}</td>
                     <td class="text-end">
-                        <button class="btn btn-danger" (click)="onDelete(key)">
-                            <i class="bi bi-trash"></i>
+                        <button class="btn btn-danger" (click)="onDelete(key)" [disabled]="isDeleting(key)">
+                            <app-busy-indicator [visible]="isDeleting(key)"></app-busy-indicator>
+                            <i *ngIf="!isDeleting(key)" class="bi bi-trash"></i>
                         </button>
                     </td>
                 </tr>

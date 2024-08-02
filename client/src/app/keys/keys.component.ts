@@ -6,11 +6,13 @@ import { AddKeyDialogComponent } from './dialogs/add-key-dialog/add-key-dialog.c
 import { DeleteKeyDialogComponent } from './dialogs/delete-key-dialog/delete-key-dialog.component';
 import { ApiKey } from './keys.interface';
 import { KeysService } from './keys.service';
+import { finalize } from 'rxjs';
+import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.component';
 
 @Component({
   selector: 'app-keys',
   standalone: true,
-  imports: [AsyncPipe, NgIf, NgForOf, DatePipe],
+  imports: [AsyncPipe, NgIf, NgForOf, DatePipe, BusyIndicatorComponent],
   templateUrl: './keys.component.html',
   styleUrl: './keys.component.scss',
 })
@@ -18,6 +20,8 @@ export class KeysComponent {
   private readonly modal = inject(NgbModal);
   private readonly service = inject(KeysService);
   private readonly toastService = inject(ToastService);
+
+  private busyDeleteButtons: number[] = [];
 
   public readonly keys$ = this.service.keys$;
 
@@ -28,13 +32,30 @@ export class KeysComponent {
   public onDelete(key: ApiKey): void {
     DeleteKeyDialogComponent.show(this.modal).then((confirmed) => {
       if (confirmed) {
-        this.service.delete(key.id).subscribe(() =>
-          this.toastService.show({
-            message: 'Deleted!',
-            type: 'info',
-          }),
-        );
+        this.addBusyForKey(key);
+
+        this.service
+          .delete(key.id)
+          .pipe(finalize(() => this.removeBusyForKey(key)))
+          .subscribe(() =>
+            this.toastService.show({
+              message: 'Deleted!',
+              type: 'primary',
+            }),
+          );
       }
     });
+  }
+
+  public isDeleting(key: ApiKey): boolean {
+    return this.busyDeleteButtons.includes(key.id);
+  }
+
+  private addBusyForKey(key: ApiKey): void {
+    this.busyDeleteButtons = [...this.busyDeleteButtons, key.id];
+  }
+
+  private removeBusyForKey(key: ApiKey): void {
+    this.busyDeleteButtons = this.busyDeleteButtons.filter((x) => x != key.id);
   }
 }
