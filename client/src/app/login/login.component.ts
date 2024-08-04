@@ -49,6 +49,10 @@ export class LoginComponent implements OnInit {
   public busy = false;
 
   public ngOnInit(): void {
+    if (!this.authService.canRefresh()) {
+      return;
+    }
+
     of(0)
       .pipe(
         tap(() => (this.busy = true)),
@@ -66,12 +70,12 @@ export class LoginComponent implements OnInit {
             } else {
               new HomeRoute().go(this.router);
             }
-          }
 
-          this.toastService.show({
-            message: 'Logged in',
-            type: 'success',
-          });
+            this.toastService.show({
+              message: 'Logged in',
+              type: 'success',
+            });
+          }
         },
         error: (error) => {
           console.error(error);

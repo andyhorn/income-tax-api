@@ -66,6 +66,10 @@ export class AuthService {
     );
   }
 
+  public canRefresh(): boolean {
+    return this.tokenService.refreshToken != null;
+  }
+
   public attemptRefresh(): Observable<boolean> {
     const refreshToken = this.tokenService.refreshToken;
 
@@ -77,8 +81,9 @@ export class AuthService {
       tap((tokens) => this.tokenService.save(tokens)),
       map(() => true),
       catchError((error) => {
+        console.error(error);
         this.tokenService.clear();
-        return throwError(() => error);
+        return of(false);
       }),
     );
   }
