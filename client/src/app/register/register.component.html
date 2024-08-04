@@ -7,7 +7,7 @@
             <div class="col-6 offset-3">
                 <div class="form-floating">
                     <input type="email" class="form-control" name="email" id="email" placeholder="email@domain.com"
-                        autocomplete="email" formControlName="email">
+                        autocomplete="email" [formControlName]="formKeys.EMAIL">
                     <label for="email">Email</label>
                 </div>
                 <ng-container *ngIf="form.get('email')?.hasError && form.get('email')?.touched">
@@ -22,7 +22,7 @@
             <div class="col-6 offset-3">
                 <div class="form-floating">
                     <input type="password" name="password" id="password" class="form-control" placeholder="Password"
-                        autocomplete="new-password" formControlName="password">
+                        autocomplete="new-password" [formControlName]="formKeys.PASSWORD">
                     <label for="password">Password</label>
                 </div>
                 <ng-container *ngIf="form.get('password')?.hasError && form.get('password')?.touched">
@@ -34,7 +34,8 @@
             <div class="col-6 offset-3">
                 <div class="form-floating">
                     <input type="password" name="confirm-password" id="confirm-password" class="form-control"
-                        placeholder="Password" autocomplete="new-password" formControlName="confirmPassword">
+                        placeholder="Password" autocomplete="new-password"
+                        [formControlName]="formKeys.CONFIRM_PASSWORD">
                     <label for="confirm-password">Confirm password</label>
                 </div>
                 <ng-container *ngIf="form.get('confirmPassword')?.hasError && form.get('confirmPassword')?.touched">

@@ -18,6 +18,12 @@ import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.
 import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
 import { ToastService } from '../shared/toast/toast.service';
 
+enum RegisterFormKeys {
+  EMAIL = 'EMAIL',
+  PASSWORD = 'PASSWORD',
+  CONFIRM_PASSWORD = 'CONFIRM_PASSWORD',
+}
+
 function mustMatchValidator(field1: string, field2: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value1 = (control as FormGroup).controls[field1].value;
@@ -45,20 +51,26 @@ function mustMatchValidator(field1: string, field2: string): ValidatorFn {
   ],
 })
 export class RegisterComponent {
+  public readonly formKeys = RegisterFormKeys;
   public readonly form = new FormGroup(
     {
-      email: new FormControl<string>('', {
+      [RegisterFormKeys.EMAIL]: new FormControl<string>('', {
         validators: [Validators.required, Validators.email],
       }),
-      password: new FormControl<string>('', {
+      [RegisterFormKeys.PASSWORD]: new FormControl<string>('', {
         validators: [Validators.required],
       }),
-      confirmPassword: new FormControl<string>('', {
+      [RegisterFormKeys.CONFIRM_PASSWORD]: new FormControl<string>('', {
         validators: [Validators.required],
       }),
     },
     {
-      validators: [mustMatchValidator('password', 'confirmPassword')],
+      validators: [
+        mustMatchValidator(
+          RegisterFormKeys.PASSWORD,
+          RegisterFormKeys.CONFIRM_PASSWORD,
+        ),
+      ],
     },
   );
 
@@ -66,7 +78,24 @@ export class RegisterComponent {
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
 
-  public busy = false;
+  private _busy = false;
+  public get busy(): boolean {
+    return this._busy;
+  }
+
+  private set busy(value: boolean) {
+    this._busy = value;
+
+    if (this._busy) {
+      Object.values(RegisterFormKeys).forEach((key) =>
+        this.form.controls[key]?.disable(),
+      );
+    } else {
+      Object.values(RegisterFormKeys).forEach((key) =>
+        this.form.controls[key]?.enable(),
+      );
+    }
+  }
 
   public submit(): void {
     this.form.markAllAsTouched();
@@ -75,9 +104,9 @@ export class RegisterComponent {
       return;
     }
 
-    const email = this.form.value['email']!;
-    const password = this.form.value['password']!;
-    const confirmPassword = this.form.value['confirmPassword']!;
+    const email = this.form.value[RegisterFormKeys.EMAIL]!;
+    const password = this.form.value[RegisterFormKeys.PASSWORD]!;
+    const confirmPassword = this.form.value[RegisterFormKeys.CONFIRM_PASSWORD]!;
 
     this.busy = true;
     this.authService
