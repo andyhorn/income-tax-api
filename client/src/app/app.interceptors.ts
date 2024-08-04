@@ -1,9 +1,15 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import {
+  HttpContextToken,
+  HttpErrorResponse,
+  HttpInterceptorFn,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, finalize, switchMap, tap, throwError } from 'rxjs';
 import { environment } from '../environments/environment';
 import { TokenService } from './auth/business/token.service';
 import { AuthClient } from './auth/data/auth.client';
+
+export const SKIP_JWT = new HttpContextToken<boolean>(() => false);
 
 export const prefixApiUrl = (): HttpInterceptorFn => {
   return (req, next) => {
@@ -17,7 +23,7 @@ export const prefixApiUrl = (): HttpInterceptorFn => {
 
 export const injectAuthToken = (): HttpInterceptorFn => {
   return (req, next) => {
-    if (req.url.startsWith('auth')) {
+    if (req.context.get(SKIP_JWT)) {
       return next(req);
     }
 
@@ -25,11 +31,9 @@ export const injectAuthToken = (): HttpInterceptorFn => {
     const accessToken = tokenService.accessToken();
 
     if (accessToken) {
-      return next(
-        req.clone({
-          headers: req.headers.set('Authorization', `Bearer ${accessToken}`),
-        }),
-      );
+      const headers = req.headers.set('Authorization', `Bearer ${accessToken}`);
+
+      return next(req.clone({ headers }));
     }
 
     return next(req);
