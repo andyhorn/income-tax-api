@@ -7,7 +7,7 @@
             <div class="col-6 offset-3">
                 <div class="form-floating">
                     <input type="email" name="email" id="email" class="form-control" placeholder="email@domain.com"
-                        autocomplete="email" formControlName="email">
+                        autocomplete="email" [formControlName]="formKeys.EMAIL">
                     <label for="email">Email</label>
                 </div>
                 <ng-container *ngIf="form.get('email')?.hasError && form.get('email')?.touched">
@@ -25,7 +25,7 @@
             <div class="col-6 offset-3">
                 <div class="form-floating">
                     <input type="password" name="password" id="password" class="form-control" placeholder="Password"
-                        autocomplete="current-password" formControlName="password">
+                        autocomplete="current-password" [formControlName]="formKeys.PASSWORD">
                     <label for="password">Password</label>
                 </div>
                 <ng-container *ngIf="form.get('password')?.hasError && form.get('password')?.touched">

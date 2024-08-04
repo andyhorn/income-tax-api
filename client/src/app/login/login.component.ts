@@ -24,6 +24,11 @@ import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.
 import { minimumDuration } from '../shared/minimum-duration/minimum-duration';
 import { ToastService } from '../shared/toast/toast.service';
 
+enum LoginFormKeys {
+  EMAIL = 'EMAIL',
+  PASSWORD = 'PASSWORD',
+}
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -32,11 +37,12 @@ import { ToastService } from '../shared/toast/toast.service';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
+  public readonly formKeys = LoginFormKeys;
   public readonly form = new FormGroup({
-    email: new FormControl<string>('', {
+    [LoginFormKeys.EMAIL]: new FormControl<string>('', {
       validators: [Validators.required, Validators.email],
     }),
-    password: new FormControl<string>('', {
+    [LoginFormKeys.PASSWORD]: new FormControl<string>('', {
       validators: [Validators.required],
     }),
   });
@@ -46,7 +52,24 @@ export class LoginComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
 
-  public busy = false;
+  private _busy = false;
+  public get busy(): boolean {
+    return this._busy;
+  }
+
+  protected set busy(value: boolean) {
+    this._busy = value;
+
+    if (this._busy) {
+      Object.values(LoginFormKeys).forEach((key) =>
+        this.form.controls[key]?.disable(),
+      );
+    } else {
+      Object.values(LoginFormKeys).forEach((key) =>
+        this.form.controls[key]?.enable(),
+      );
+    }
+  }
 
   public ngOnInit(): void {
     if (!this.authService.canRefresh()) {
@@ -94,8 +117,8 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    const email = this.form.get('email')!.value!;
-    const password = this.form.get('password')!.value!;
+    const email = this.form.value[LoginFormKeys.EMAIL]!;
+    const password = this.form.value[LoginFormKeys.PASSWORD]!;
 
     this.busy = true;
     this.authService
