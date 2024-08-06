@@ -1,18 +1,27 @@
 import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { finalize } from 'rxjs';
+import { KeyUsageRoute, KeyUsageRouteData } from '../app.routes';
+import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.component';
 import { ToastService } from '../shared/toast/toast.service';
 import { AddKeyDialogComponent } from './dialogs/add-key-dialog/add-key-dialog.component';
 import { DeleteKeyDialogComponent } from './dialogs/delete-key-dialog/delete-key-dialog.component';
 import { ApiKey } from './keys.interface';
 import { KeysService } from './keys.service';
-import { finalize } from 'rxjs';
-import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.component';
 
 @Component({
   selector: 'app-keys',
   standalone: true,
-  imports: [AsyncPipe, NgIf, NgForOf, DatePipe, BusyIndicatorComponent],
+  imports: [
+    AsyncPipe,
+    NgIf,
+    NgForOf,
+    DatePipe,
+    BusyIndicatorComponent,
+    RouterLink,
+  ],
   templateUrl: './keys.component.html',
   styleUrl: './keys.component.scss',
 })
@@ -49,6 +58,11 @@ export class KeysComponent {
 
   public isDeleting(key: ApiKey): boolean {
     return this.busyDeleteButtons.includes(key.id);
+  }
+
+  public routerLink(key: ApiKey): string {
+    const url = new KeyUsageRoute().fullPath(new KeyUsageRouteData(key.id));
+    return url;
   }
 
   private addBusyForKey(key: ApiKey): void {

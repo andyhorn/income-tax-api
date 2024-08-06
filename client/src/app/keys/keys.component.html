@@ -20,7 +20,7 @@
                 <tr *ngFor="let key of keys; let i = index">
                     <td>{{ i + 1 }}</td>
                     <td>{{ key.nickname }}</td>
-                    <td>{{ key.createdAt | date }}</td>
+                    <td><a [routerLink]="routerLink(key)">{{ key.createdAt | date }}</a></td>
                     <td class="text-end">
                         <button class="btn btn-danger" (click)="onDelete(key)" [disabled]="isDeleting(key)">
                             <app-busy-indicator [visible]="isDeleting(key)"></app-busy-indicator>
