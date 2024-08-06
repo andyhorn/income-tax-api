@@ -3,3 +3,8 @@ export interface ApiKeyDto {
   nickname: string | null;
   createdAt: Date;
 }
+
+export interface KeyUsageDto {
+  id: number;
+  uses: Date[];
+}

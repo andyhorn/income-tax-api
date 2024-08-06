@@ -9,6 +9,7 @@ import {
   ApiKeyDeleteParams,
   ApiKeyFindManyParams,
   ApiKeyFindParams,
+  ApiKeyUsageParams,
 } from './api-key.interface';
 
 @Injectable()
@@ -117,5 +118,18 @@ export class ApiKeyRepository {
     });
 
     return entity != null;
+  }
+
+  public async getUsage({ keyId, userId }: ApiKeyUsageParams): Promise<Date[]> {
+    const entities = await this.apiKeyUsageRepository.find({
+      where: {
+        apiKey: {
+          userId,
+          id: keyId,
+        },
+      },
+    });
+
+    return entities.map((entity) => entity.usedAt);
   }
 }

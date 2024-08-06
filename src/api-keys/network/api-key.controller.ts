@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -14,7 +15,7 @@ import { AuthGuard } from 'src/auth/network/auth.guard';
 import { AuthenticatedUserId } from 'src/users/network/authenticated-user-id.decorator';
 import { ApiKeysService } from '../business/api-keys.service';
 import { ApiKeyDtoConverter } from './api-key-dto.converter';
-import { ApiKeyDto } from './api-key.dto';
+import { ApiKeyDto, KeyUsageDto } from './api-key.dto';
 
 @Controller('api-keys')
 export class ApiKeyController {
@@ -43,6 +44,24 @@ export class ApiKeyController {
   }
 
   @UseGuards(AuthGuard)
+  @Get(':id')
+  public async get(
+    @Param('id', ParseIntPipe) id: number,
+    @AuthenticatedUserId() userId: number,
+  ): Promise<ApiKeyDto> {
+    const key = await this.apiKeysService.get({
+      keyId: id,
+      userId,
+    });
+
+    if (!key) {
+      throw new NotFoundException();
+    }
+
+    return this.converter.toDto(key);
+  }
+
+  @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(
@@ -53,5 +72,22 @@ export class ApiKeyController {
       keyId: id,
       userId,
     });
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id/usage')
+  public async getUsage(
+    @Param('id', ParseIntPipe) id: number,
+    @AuthenticatedUserId() userId: number,
+  ): Promise<KeyUsageDto> {
+    const uses = await this.apiKeysService.getUsage({
+      keyId: id,
+      userId,
+    });
+
+    return {
+      id,
+      uses,
+    };
   }
 }

@@ -57,7 +57,7 @@ export class UsageComponent implements OnInit {
       tap(() => (this.loading = false)),
     );
 
-    this.usage$ = load$.pipe(map(([usage]) => usage ?? []));
+    this.usage$ = load$.pipe(map(([usage]) => usage?.uses ?? []));
 
     this.key$ = load$.pipe(map(([_, key]) => key!));
   }

@@ -15,6 +15,8 @@ export interface ApiKeyCreateParams {
 
 export interface ApiKeyFindParams {
   hash?: string;
+  userId?: number;
+  id?: number;
 }
 
 export interface ApiKeyFindManyParams {
@@ -22,6 +24,16 @@ export interface ApiKeyFindManyParams {
 }
 
 export interface ApiKeyDeleteParams {
+  keyId: number;
+  userId: number;
+}
+
+export interface ApiKeyUsageParams {
+  keyId: number;
+  userId: number;
+}
+
+export interface ApiKeyGetParams {
   keyId: number;
   userId: number;
 }

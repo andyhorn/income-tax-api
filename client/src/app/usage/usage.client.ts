@@ -6,7 +6,7 @@ import { Observable, shareReplay } from 'rxjs';
 export class UsageClient {
   constructor(private readonly http: HttpClient) {}
 
-  public getUsageFor(id: number): Observable<Date[]> {
+  public getUsageFor(id: number): Observable<{ uses: Date[] }> {
     return this.http.get<any>(`api-keys/${id}`).pipe(shareReplay());
   }
 }
