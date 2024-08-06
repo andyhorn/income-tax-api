@@ -19,9 +19,9 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
 
 type AuthStateType = 'authenticated' | 'unauthenticated';
 
-export class HomeRoute extends SimpleRoute {
+export class KeysListRoute extends SimpleRoute {
   constructor() {
-    super('');
+    super('keys');
   }
 }
 
@@ -79,7 +79,7 @@ export class VerifyEmailRoute extends SimpleDataRoute<VerifyEmailRouteData> {
 
 export const routes: Routes = [
   {
-    path: new HomeRoute().path(),
+    path: new KeysListRoute().path(),
     loadComponent: () => HomeComponent,
     canActivate: [isLoggedIn()],
   },
@@ -108,6 +108,10 @@ export const routes: Routes = [
       ),
     ],
   },
+  {
+    path: '**',
+    redirectTo: new KeysListRoute().fullPath(),
+  },
 ];
 
 function isLoggedIn(): CanActivateFn {
@@ -118,7 +122,7 @@ function isLoggedIn(): CanActivateFn {
 
 function isLoggedOut(): CanActivateFn {
   return hasAuthState('unauthenticated', (router) => {
-    return router.parseUrl(new HomeRoute().fullPath());
+    return router.parseUrl(new KeysListRoute().fullPath());
   });
 }
 

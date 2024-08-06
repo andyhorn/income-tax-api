@@ -10,7 +10,7 @@ import {
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { HomeRoute } from '../app.routes';
+import { KeysListRoute } from '../app.routes';
 import { AuthError } from '../auth/business/auth.error';
 import { AuthService } from '../auth/business/auth.service';
 import { BusyIndicatorComponent } from '../shared/busy-indicator/busy-indicator.component';
@@ -108,7 +108,7 @@ export class VerifyEmailComponent implements AfterViewInit {
               message: 'Email verified!',
               type: 'success',
             });
-            new HomeRoute().go(this.router);
+            new KeysListRoute().go(this.router);
           },
           error: () => {
             this.toastService.show({

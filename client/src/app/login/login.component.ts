@@ -9,7 +9,7 @@ import {
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize, of, switchMap, tap } from 'rxjs';
 import {
-  HomeRoute,
+  KeysListRoute,
   LoginRouteData,
   VerifyEmailRoute,
   VerifyEmailRouteData,
@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit {
             if (data.redirect) {
               this.router.navigateByUrl(data.redirect);
             } else {
-              new HomeRoute().go(this.router);
+              new KeysListRoute().go(this.router);
             }
 
             this.toastService.show({
@@ -147,7 +147,7 @@ export class LoginComponent implements OnInit {
           }
         },
         complete: () => {
-          new HomeRoute().go(this.router);
+          new KeysListRoute().go(this.router);
           this.toastService.show({
             message: 'Logged in',
             type: 'success',

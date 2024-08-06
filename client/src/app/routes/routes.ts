@@ -1,8 +1,8 @@
 import { Router } from '@angular/router';
 
-type ParameterMap = { [key: string]: string };
-type QueryMap = { [key: string]: string | undefined };
-type StateMap = { [key: string]: any };
+export type ParameterMap = { [key: string]: string };
+export type QueryMap = { [key: string]: string | undefined };
+export type StateMap = { [key: string]: any };
 
 export abstract class SimpleRouteData {
   public get parameters(): ParameterMap {

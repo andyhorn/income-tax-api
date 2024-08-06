@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { finalize } from 'rxjs';
 import {
-  HomeRoute,
+  KeysListRoute,
   LoginRoute,
   LoginRouteData,
   RegisterRoute,
@@ -31,7 +31,7 @@ export class AppTopBarComponent {
   });
 
   public toHome(): void {
-    new HomeRoute().go(this.router);
+    new KeysListRoute().go(this.router);
   }
 
   public toLogin(): void {
