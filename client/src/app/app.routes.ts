@@ -14,8 +14,15 @@ import {
 import { HomeComponent } from './home.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { SimpleDataRoute, SimpleRoute, SimpleRouteData } from './routes/routes';
+import {
+  ChildRoute,
+  ParameterMap,
+  SimpleDataRoute,
+  SimpleRoute,
+  SimpleRouteData,
+} from './routes/routes';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { UsageComponent } from './usage/usage.component';
 
 type AuthStateType = 'authenticated' | 'unauthenticated';
 
@@ -77,11 +84,39 @@ export class VerifyEmailRoute extends SimpleDataRoute<VerifyEmailRouteData> {
   }
 }
 
+export class KeyUsageRouteData extends SimpleRouteData {
+  constructor(private readonly id: number) {
+    super();
+  }
+
+  public override get parameters(): ParameterMap {
+    return {
+      id: this.id.toFixed(0),
+    };
+  }
+}
+
+export class KeyUsageRoute
+  extends SimpleDataRoute<KeyUsageRouteData>
+  implements ChildRoute<KeysListRoute>
+{
+  constructor() {
+    super(':id');
+  }
+  public readonly parent = new KeysListRoute();
+}
+
 export const routes: Routes = [
   {
     path: new KeysListRoute().path(),
     loadComponent: () => HomeComponent,
     canActivate: [isLoggedIn()],
+    children: [
+      {
+        path: new KeyUsageRoute().path(),
+        loadComponent: () => UsageComponent,
+      },
+    ],
   },
   {
     path: new RegisterRoute().path(),

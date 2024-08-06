@@ -24,4 +24,8 @@ export class KeysClient {
   public delete(id: number): Observable<any> {
     return this.http.delete(`api-keys/${id}`);
   }
+
+  public get(id: number): Observable<ApiKey> {
+    return this.http.get<ApiKey>(`api-keys/${id}`);
+  }
 }
