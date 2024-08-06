@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DatePipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -17,7 +17,7 @@ import { UsageClient } from './usage.client';
 @Component({
   selector: 'app-usage',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, JsonPipe, NgForOf, DatePipe, NgIf],
   providers: [UsageClient, KeysClient],
   templateUrl: './usage.component.html',
   styleUrl: './usage.component.scss',
@@ -39,26 +39,26 @@ export class UsageComponent implements OnInit {
     const load$ = id$.pipe(
       tap(() => (this.loading = true)),
       switchMap((id) =>
-        forkJoin([
-          this.usageClient.getUsageFor(id).pipe(
+        forkJoin({
+          usage: this.usageClient.getUsageFor(id).pipe(
             catchError((err) => {
               console.error(err);
               return of(null);
             }),
           ),
-          this.keysClient.get(id).pipe(
+          key: this.keysClient.get(id).pipe(
             catchError((err) => {
               console.error(err);
               return of(null);
             }),
           ),
-        ]),
+        }),
       ),
       tap(() => (this.loading = false)),
     );
 
-    this.usage$ = load$.pipe(map(([usage]) => usage?.uses ?? []));
+    this.usage$ = load$.pipe(map(({ usage }) => usage?.uses ?? []));
 
-    this.key$ = load$.pipe(map(([_, key]) => key!));
+    this.key$ = load$.pipe(map(({ key }) => key!));
   }
 }

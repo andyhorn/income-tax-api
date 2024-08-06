@@ -7,6 +7,6 @@ export class UsageClient {
   constructor(private readonly http: HttpClient) {}
 
   public getUsageFor(id: number): Observable<{ uses: Date[] }> {
-    return this.http.get<any>(`api-keys/${id}`).pipe(shareReplay());
+    return this.http.get<any>(`api-keys/${id}/usage`).pipe(shareReplay());
   }
 }

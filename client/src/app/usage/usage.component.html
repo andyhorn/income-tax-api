@@ -1,1 +1,30 @@
-<h5>Usage for {{ key$ | async }}</h5>
+<div class="container pt-5">
+
+    <ng-container *ngIf="key$ | async as key">
+        <h5>Usage for key {{ (key$ | async)?.id }}</h5>
+
+        <ng-container *ngIf="usage$ | async as usage">
+            <ng-container *ngIf="usage.length">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let use of usage; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ use | date: 'short' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+
+            <ng-container *ngIf="!usage.length">
+                <p>This key has not been used.</p>
+            </ng-container>
+        </ng-container>
+
+    </ng-container>
+</div>

@@ -23,7 +23,11 @@ export class ApiKeyRepository {
   ) {}
 
   public async list(): Promise<ApiKey[]> {
-    const entities = await this.apiKeyRepository.find({});
+    const entities = await this.apiKeyRepository.find({
+      order: {
+        createdAt: 'ASC',
+      },
+    });
 
     return entities.map(this.converter.fromEntity.bind(this));
   }
@@ -42,9 +46,14 @@ export class ApiKeyRepository {
   }
 
   public async findMany(params: ApiKeyFindManyParams): Promise<ApiKey[]> {
-    const entities = await this.apiKeyRepository.findBy({
-      ...params,
-      deletedAt: IsNull(),
+    const entities = await this.apiKeyRepository.find({
+      where: {
+        ...params,
+        deletedAt: IsNull(),
+      },
+      order: {
+        createdAt: 'ASC',
+      },
     });
 
     return entities.map(this.converter.fromEntity);
@@ -123,10 +132,13 @@ export class ApiKeyRepository {
   public async getUsage({ keyId, userId }: ApiKeyUsageParams): Promise<Date[]> {
     const entities = await this.apiKeyUsageRepository.find({
       where: {
+        apiKeyId: keyId,
         apiKey: {
           userId,
-          id: keyId,
         },
+      },
+      order: {
+        usedAt: 'ASC',
       },
     });
 
