@@ -96,14 +96,10 @@ export class KeyUsageRouteData extends SimpleRouteData {
   }
 }
 
-export class KeyUsageRoute
-  extends SimpleDataRoute<KeyUsageRouteData>
-  implements ChildRoute<KeysListRoute>
-{
+export class KeyUsageRoute extends SimpleDataRoute<KeyUsageRouteData> {
   constructor() {
-    super(':id');
+    super('keys/:id');
   }
-  public readonly parent = new KeysListRoute();
 }
 
 export const routes: Routes = [
@@ -111,12 +107,11 @@ export const routes: Routes = [
     path: new KeysListRoute().path(),
     loadComponent: () => HomeComponent,
     canActivate: [isLoggedIn()],
-    children: [
-      {
-        path: new KeyUsageRoute().path(),
-        loadComponent: () => UsageComponent,
-      },
-    ],
+  },
+  {
+    path: new KeyUsageRoute().path(),
+    loadComponent: () => UsageComponent,
+    canActivate: [isLoggedIn()],
   },
   {
     path: new RegisterRoute().path(),
