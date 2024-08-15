@@ -5,6 +5,7 @@ import {
   EmailNotConfirmedError,
   InvalidCredentialsError,
   InvalidTokenError,
+  UsedRefreshTokenError,
 } from '../auth.error';
 import {
   LoginParams,
@@ -96,6 +97,8 @@ export class AuthClient {
         throw new EmailNotConfirmedError();
       case 'Token has expired or is invalid':
         throw new InvalidTokenError();
+      case 'Invalid Refresh Token: Already Used':
+        throw new UsedRefreshTokenError();
       default:
         throw error;
     }

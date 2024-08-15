@@ -16,6 +16,8 @@ export class AuthError extends Error {
         return new EmailNotConfirmedError();
       case 'invalid-token':
         return new InvalidTokenError();
+      case 'refresh-token-used':
+        return new UsedRefreshTokenError();
       default:
         return new UnknownError();
     }
@@ -49,5 +51,11 @@ export class EmailNotConfirmedError extends AuthError {
 export class InvalidTokenError extends AuthError {
   constructor() {
     super('invalid-token', 'The token is invalid or has expired.');
+  }
+}
+
+export class UsedRefreshTokenError extends AuthError {
+  constructor() {
+    super('refresh-token-used', 'The refresh token has already been used.');
   }
 }

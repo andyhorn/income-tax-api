@@ -23,3 +23,9 @@ export class InvalidTokenError extends UnauthorizedException {
     super('invalid-token', 'The token is invalid or has expired.');
   }
 }
+
+export class UsedRefreshTokenError extends UnauthorizedException {
+  constructor() {
+    super('refresh-token-used', 'The refresh token has already been used.');
+  }
+}
