@@ -1,5 +1,6 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import {
   injectAuthToken,
@@ -15,5 +16,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([prefixApiUrl(), injectAuthToken(), refreshTokens()]),
     ),
+    BrowserAnimationsModule.withConfig({
+      disableAnimations: false,
+    }).providers!,
   ],
 };
