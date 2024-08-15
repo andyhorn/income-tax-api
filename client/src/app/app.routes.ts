@@ -48,7 +48,7 @@ export class LoginRouteData extends SimpleRouteData {
   public override get query(): { [key: string]: string } {
     if (this.redirect) {
       return {
-        url: this.redirect,
+        redirect: this.redirect,
       };
     }
 
@@ -106,12 +106,18 @@ export const routes: Routes = [
   {
     path: new KeysListRoute().path(),
     loadComponent: () => HomeComponent,
-    canActivate: [isLoggedIn()],
+    canActivate: [isLoggedIn((_) => new KeysListRoute().fullPath())],
   },
   {
     path: new KeyUsageRoute().path(),
     loadComponent: () => UsageComponent,
-    canActivate: [isLoggedIn()],
+    canActivate: [
+      isLoggedIn((route) =>
+        new KeyUsageRoute().fullPath(
+          new KeyUsageRouteData(+route.paramMap.get('id')!),
+        ),
+      ),
+    ],
   },
   {
     path: new RegisterRoute().path(),
@@ -144,8 +150,16 @@ export const routes: Routes = [
   },
 ];
 
-function isLoggedIn(): CanActivateFn {
-  return hasAuthState('authenticated', (router) => {
+function isLoggedIn(
+  returnUrlBuilder?: (route: ActivatedRouteSnapshot) => string,
+): CanActivateFn {
+  return hasAuthState('authenticated', (router, route) => {
+    if (returnUrlBuilder) {
+      return router.parseUrl(
+        new LoginRoute().fullPath(new LoginRouteData(returnUrlBuilder(route))),
+      );
+    }
+
     return router.parseUrl(new LoginRoute().fullPath(LoginRouteData.empty));
   });
 }
@@ -164,9 +178,9 @@ function hasEmail(): CanActivateFn {
 
 function hasAuthState(
   req: AuthStateType,
-  onFailure: (router: Router) => GuardResult,
+  onFailure: (router: Router, route: ActivatedRouteSnapshot) => GuardResult,
 ): CanActivateFn {
-  return (_, __) => {
+  return (route, __) => {
     const router = inject(Router);
     const authService = inject(AuthService);
     const state = authService.authState();
@@ -179,7 +193,7 @@ function hasAuthState(
       return true;
     }
 
-    return onFailure(router);
+    return onFailure(router, route);
   };
 }
 
