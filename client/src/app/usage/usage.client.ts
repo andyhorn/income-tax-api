@@ -4,7 +4,9 @@ import { map, Observable, shareReplay } from 'rxjs';
 import { KeyUsageDtoConverter } from './usage-dto.converter';
 import { KeyUsage, KeyUsageDto } from './usage.interface';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UsageClient {
   constructor(
     private readonly http: HttpClient,
