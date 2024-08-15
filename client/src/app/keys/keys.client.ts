@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ApiKey } from './keys.interface';
+import { map, Observable, shareReplay } from 'rxjs';
+import { ApiKeyDtoConverter } from './api-key-dto.converter';
+import { ApiKey, ApiKeyDto } from './keys.interface';
 
 export interface CreateKeyParams {
   nickname?: string;
@@ -11,10 +12,20 @@ export interface CreateKeyParams {
   providedIn: 'root',
 })
 export class KeysClient {
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly converter: ApiKeyDtoConverter,
+  ) {}
 
   public forCurrentUser(): Observable<ApiKey[]> {
-    return this.http.get<ApiKey[]>('api-keys');
+    return this.http.get<ApiKeyDto[]>('api-keys').pipe(
+      shareReplay(),
+      map((dtos) => {
+        return dtos.map((dto) => {
+          return this.converter.fromDto(dto);
+        });
+      }),
+    );
   }
 
   public create(params: CreateKeyParams): Observable<{ token: string }> {
@@ -26,6 +37,9 @@ export class KeysClient {
   }
 
   public get(id: number): Observable<ApiKey> {
-    return this.http.get<ApiKey>(`api-keys/${id}`);
+    return this.http.get<ApiKeyDto>(`api-keys/${id}`).pipe(
+      shareReplay(),
+      map((key) => this.converter.fromDto(key)),
+    );
   }
 }
