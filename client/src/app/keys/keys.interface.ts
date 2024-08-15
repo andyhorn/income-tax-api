@@ -3,3 +3,9 @@ export interface ApiKey {
   nickname: string;
   createdAt: Date;
 }
+
+export interface ApiKeyDto {
+  id: number;
+  nickname: string;
+  createdAt: string;
+}
