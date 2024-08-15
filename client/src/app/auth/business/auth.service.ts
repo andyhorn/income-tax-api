@@ -1,6 +1,5 @@
-import { provideHttpClient } from '@angular/common/http';
 import { computed, inject, Injectable } from '@angular/core';
-import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import {
   AuthLoginParameters,
   AuthRegisterParameters,
@@ -23,7 +22,6 @@ export class Unauthenticated extends AuthState {}
 
 @Injectable({
   providedIn: 'root',
-  deps: [provideHttpClient],
 })
 export class AuthService {
   private readonly tokenService = inject(TokenService);

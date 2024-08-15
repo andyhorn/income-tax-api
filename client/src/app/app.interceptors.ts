@@ -2,6 +2,7 @@ import {
   HttpContextToken,
   HttpErrorResponse,
   HttpInterceptorFn,
+  HttpStatusCode,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, finalize, switchMap, tap, throwError } from 'rxjs';
@@ -48,7 +49,7 @@ export const refreshTokens = (): HttpInterceptorFn => {
 
     return next(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status != 403) {
+        if (error.status != HttpStatusCode.Unauthorized) {
           return throwError(() => error);
         }
 
